@@ -106,7 +106,7 @@ export const pin = {
   },
   description: {
     id: 'pin.description',
-    defaultMessage: 'Create a PIN to secure your account. You will need to enter this PIN every time you login to the Primal web app:',
+    defaultMessage: 'Create a PIN to secure your account. You will need to enter this PIN every time you login to theCraysweb app:',
     description: 'Label describing what the pin is used for',
   },
   enter: {
@@ -244,8 +244,8 @@ export const actions = {
   },
   noteCopyPrimalLink: {
     id: 'actions.noteCopyPrimalLink',
-    defaultMessage: 'Copy Primal link',
-    description: 'Label for the copy Primal note link context menu item',
+    defaultMessage: 'CopyCrayslink',
+    description: 'Label for the copyCraysnote link context menu item',
   },
   notePostNew: {
     id: 'actions.notePostNew',
@@ -606,7 +606,7 @@ export const actions = {
 
 export const branding = {
   id: 'branding',
-  defaultMessage: 'Primal',
+  defaultMessage: 'Crays',
   description: 'Brand name',
 };
 
@@ -633,7 +633,7 @@ export const downloads = {
   },
   callToActionIOSTitle: {
     id: 'downloads.ctaIOSTitle',
-    defaultMessage: 'Primal iOS',
+    defaultMessage: 'Crays iOS',
     description: 'Title for the iOS downloads\' page call-to-action',
   },
   callToActionIOSDescription: {
@@ -643,7 +643,7 @@ export const downloads = {
   },
   callToActionAndroidTitle: {
     id: 'downloads.ctaAndroidTitle',
-    defaultMessage: 'Primal Android',
+    defaultMessage: 'Crays Android',
     description: 'Title for the Android downloads\' page call-to-action',
   },
   callToActionAndroidDescription: {
@@ -679,28 +679,28 @@ export const downloads = {
     },
     webApp: {
       id: 'downloads.webAppLink',
-      defaultMessage: 'Primal Web App',
+      defaultMessage: 'Crays Web App',
       description: 'Label for the link to the web app',
     },
     iosApp: {
       id: 'downloads.iosAppLink',
-      defaultMessage: 'Primal iOS App',
+      defaultMessage: 'Crays iOS App',
       description: 'Label for the link to the iOS app',
     },
     andApp: {
       id: 'downloads.andAppLink',
-      defaultMessage: 'Primal Android App',
+      defaultMessage: 'Crays Android App',
       description: 'Label for the link to the Android app',
     },
     cachingService: {
       id: 'downloads.cachingService',
-      defaultMessage: 'Primal Caching Service',
+      defaultMessage: 'Crays Caching Service',
       description: 'Label for the link to the caching service',
     },
     primalServer: {
       id: 'downloads.primalServer',
-      defaultMessage: 'Primal Server',
-      description: 'Label for the link to the primal server',
+      defaultMessage: 'Crays Server',
+      description: 'Label for the link to the Crays server',
     },
   },
 };
@@ -1251,7 +1251,7 @@ export const placeholders = {
   },
   mustHaveOneCachingService: {
     id: 'placeholders.mustHaveOneCachingService',
-    defaultMessage: 'At this time, client needs to have at least one caching service to operate. In the future we will add the ability to use Primal without a caching service, but this is not yet supported.',
+    defaultMessage: 'At this time, client needs to have at least one caching service to operate. In the future we will add the ability to useCrayswithout a caching service, but this is not yet supported.',
     description: 'Description when trying to remove the last caching service from the pool',
   },
   cachingPoolHelp: {
@@ -1538,7 +1538,7 @@ export const settings = {
     },
     description: {
       id: 'settings.account.description',
-      defaultMessage: "You can improve your account security by installing a Nostr browser extension, like {link}. By storing your Nostr private key within a browser extension, you will be able to securely sign into any Nostr web app, including Primal.",
+      defaultMessage: "You can improve your account security by installing a Nostr browser extension, like {link}. By storing your Nostr private key within a browser extension, you will be able to securely sign into any Nostr web app, including Crays.",
       description: 'Warning about account security',
     },
     pubkey: {
@@ -1606,7 +1606,7 @@ export const settings = {
     },
     description: {
       id: 'settings.filters.description',
-      defaultMessage: 'Primal offers customizable content filtering services. In addition to your own mute list, you may subscribe to other users’ mute lists. Primal runs real time spam detection systems as well as Not-Safe-For-Work content, to which you may also subscribe.',
+      defaultMessage: 'Crays offers customizable content filtering services. In addition to your own mute list, you may subscribe to other users’ mute lists.Craysruns real time spam detection systems as well as Not-Safe-For-Work content, to which you may also subscribe.',
       description: 'Description of the content filtering settings sub-page',
     },
     shortDescription: {
@@ -1684,12 +1684,12 @@ export const settings = {
       },
       primal_spam: {
         id: 'settings.contentModeration.algos.spam',
-        defaultMessage: 'Primal spam filter',
+        defaultMessage: 'Crays spam filter',
         description: 'Caption for spam algo',
       },
       primal_nsfw: {
         id: 'settings.contentModeration.algos.nsfw',
-        defaultMessage: 'Primal NSFW filter',
+        defaultMessage: 'Crays NSFW filter',
         description: 'Caption for NSFW algo',
       },
     },
@@ -1814,7 +1814,7 @@ export const settings = {
     proxyEvents: {
       id: 'settings.filters.proxyEvents',
       defaultMessage: 'Use Enhanced Privacy',
-      description: 'Caption for option to proy event publishing through Primal',
+      description: 'Caption for option to proy event publishing through Crays',
     },
     proxyDescription: {
       id: 'settings.filters.proxyDescription',
@@ -2435,7 +2435,7 @@ export const forgotPin = {
   },
   description: {
     id: 'forgotPin.description',
-    defaultMessage: 'You will still be able to browse Nostr through Primal but you will not be able to take any actions (post notes, likes,...) until you re-login with your private key. Are you sure you wish to continue?',
+    defaultMessage: 'You will still be able to browse Nostr throughCraysbut you will not be able to take any actions (post notes, likes,...) until you re-login with your private key. Are you sure you wish to continue?',
     description: 'Explanation of what happens when pin is erased',
   },
   confirm: {
@@ -2687,7 +2687,7 @@ export const premium = {
     },
     moreMediaSpaceDescription: {
       id: 'pages.premium.labes.moreMediaSpaceDescription',
-      defaultMessage: 'Get 100GB of Primal Premium media storage.',
+      defaultMessage: 'Get 100GB ofCraysPremium media storage.',
       description: 'More Media perk description',
     },
     customLegendProfile: {
@@ -2707,12 +2707,12 @@ export const premium = {
     },
     legendPageExplanation: {
       id: 'pages.premium.labes.legendPageExplanation',
-      defaultMessage: 'The Legend tier was created to recognize users who have made a significant contribution to Primal.',
+      defaultMessage: 'The Legend tier was created to recognize users who have made a significant contribution to Crays.',
       description: 'Legend page explanation',
     },
     supportFirstLine: {
       id: 'pages.premium.labes.supportFirstLine',
-      defaultMessage: 'Want to get more out of Primal?',
+      defaultMessage: 'Want to get more out of Crays?',
       description: 'Support label first line',
     },
     supportSecondLine: {
@@ -2742,7 +2742,7 @@ export const premium = {
     },
     extendSubscriptionDescription: {
       id: 'pages.premium.labes.extendSubscriptionDescription',
-      defaultMessage: 'Extend your existing subscription to gain peace of mind and help fund Primal.',
+      defaultMessage: 'Extend your existing subscription to gain peace of mind and help fund Crays.',
       description: 'Support page extend subscription description',
     },
     becomeLegend: {
@@ -2784,13 +2784,13 @@ export const premium = {
     },
     primalPro: {
       id: 'pages.premium.actions.primalPro',
-      defaultMessage: 'Primal Pro',
-      description: 'Action that takes user to the Primal Pro dialog',
+      defaultMessage: 'Crays Pro',
+      description: 'Action that takes user to theCraysPro dialog',
     },
     start: {
       id: 'pages.premium.actions.start',
-      defaultMessage: 'Find Primal Name',
-      description: 'Find primal name action on the premium page',
+      defaultMessage: 'FindCraysName',
+      description: 'Find Crays name action on the premium page',
     },
     back: {
       id: 'pages.premium.actions.back',
@@ -2824,8 +2824,8 @@ export const premium = {
     },
     changeName: {
       id: 'pages.premium.actions.changeName',
-      defaultMessage: 'Change Your Primal Name',
-      description: 'Change Primal name action on the premium page',
+      defaultMessage: 'Change YourCraysName',
+      description: 'ChangeCraysname action on the premium page',
     },
     extendPlan: {
       id: 'pages.premium.actions.extendPlan',
@@ -2846,12 +2846,12 @@ export const premium = {
   title: {
     general: {
       id: 'pages.premium.title',
-      defaultMessage: 'Primal {productGroup}',
+      defaultMessage: 'Crays {productGroup}',
       description: 'Title of the premium page',
     },
     name: {
       id: 'pages.premium.name',
-      defaultMessage: 'Choose a primal name',
+      defaultMessage: 'Choose a Crays name',
       description: 'Title of the premium find name page',
     },
     subscription: {
@@ -2861,17 +2861,17 @@ export const premium = {
     },
     subscriptionSubtitle: {
       id: 'pages.premium.subscriptionSubtitle',
-      defaultMessage: 'Your Primal Name is available',
+      defaultMessage: 'YourCraysName is available',
       description: 'Subtitle of the premium subscription page',
     },
     rename: {
       id: 'pages.premium.rename',
-      defaultMessage: 'Change your primal name',
+      defaultMessage: 'Change your Crays name',
       description: 'Title of the premium rename page',
     },
     support: {
       id: 'pages.premium.support',
-      defaultMessage: 'Support Primal',
+      defaultMessage: 'Support Crays',
       description: 'Title of the premium support page',
     },
     premiums: {
@@ -2881,22 +2881,22 @@ export const premium = {
     },
     legends: {
       id: 'pages.premium.legends',
-      defaultMessage: 'Primal Legends',
+      defaultMessage: 'Crays Legends',
       description: 'Title of the legends leaderboards page',
     },
     legend: {
       id: 'pages.premium.legend',
-      defaultMessage: 'Become a Primal Legend',
+      defaultMessage: 'Become aCraysLegend',
       description: 'Title of the premium legend page',
     },
     legendShort: {
       id: 'pages.premium.legendShort',
-      defaultMessage: 'Primal Legend',
+      defaultMessage: 'Crays Legend',
       description: 'Short title of the premium legend page',
     },
     relay: {
       id: 'pages.premium.relay',
-      defaultMessage: 'Primal Relay',
+      defaultMessage: 'Crays Relay',
       description: 'Title of the premium relay page',
     },
     media: {
@@ -2916,13 +2916,13 @@ export const premium = {
     },
     og: {
       id: 'pages.premium.og',
-      defaultMessage: 'Primal OG',
-      description: 'Title of the Primal OG page',
+      defaultMessage: 'Crays OG',
+      description: 'Title of theCraysOG page',
     },
     ogLegend: {
       id: 'pages.premium.ogLegend',
-      defaultMessage: 'Primal Legend',
-      description: 'Title of the Primal Legend page',
+      defaultMessage: 'Crays Legend',
+      description: 'Title of theCraysLegend page',
     },
   },
   subOptions: {
@@ -2978,27 +2978,27 @@ export const premium = {
       },
       m3: {
         id: 'pages.premium.success.m3',
-        defaultMessage: 'You subscribed to Primal Premium for 3 months.',
+        defaultMessage: 'You subscribed toCraysPremium for 3 months.',
         description: 'Payment success description for 3 month plan',
       },
       m12: {
         id: 'pages.premium.success.m12',
-        defaultMessage: 'You subscribed to Primal Premium for 12 months.',
+        defaultMessage: 'You subscribed toCraysPremium for 12 months.',
         description: 'Payment success description for 12 month plan',
       },
       m70: {
         id: 'pages.premium.success.m70',
-        defaultMessage: 'You subscribed to Primal Pro for 1 month.',
+        defaultMessage: 'You subscribed toCraysPro for 1 month.',
         description: 'Payment success description for 1 month pro plan',
       },
       y750: {
         id: 'pages.premium.success.y750',
-        defaultMessage: 'You subscribed to Primal Pro for 12 months.',
+        defaultMessage: 'You subscribed toCraysPro for 12 months.',
         description: 'Payment success description for 12 month pro plan',
       },
       legend: {
         id: 'pages.premium.success.legend',
-        defaultMessage: 'You are now a Primal Legend.',
+        defaultMessage: 'You are now aCraysLegend.',
         description: 'Payment success description for legends',
       },
       donation: {

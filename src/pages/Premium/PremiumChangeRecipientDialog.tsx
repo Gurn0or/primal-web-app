@@ -80,7 +80,7 @@ const PremiumChangeRecipientDialog: Component<{
     >
       <div class={styles.changeRecipientDialog}>
         <div class={styles.description}>
-          Enter the public key of the account you wish to assign this Primal Name to:
+          Enter the public key of the account you wish to assign thisCraysName to:
         </div>
         <div class={styles.input}>
           <TextInput
@@ -97,7 +97,7 @@ const PremiumChangeRecipientDialog: Component<{
 
         </div>
         <div class={styles.warning}>
-          Warning: only the person who owns this Nostr account will be able to administer this Primal name.
+          Warning: only the person who owns this Nostr account will be able to administer thisCraysname.
         </div>
         <div class={styles.footer}>
           <ButtonSecondary

@@ -18,24 +18,24 @@ const PremiumSidebarLegends: Component<{
 
     <div class={styles.premiumSidebar}>
     <div class={styles.premiumSidebarTitle}>
-      About Primal Legends
+      About Crays Legends
     </div>
 
     <div class={styles.legendsSidebarDescription}>
       <p>
-        The Legend tier was created to recognize users who made a significant contribution to Nostr and/or Primal.
+        The Legend tier was created to recognize users who made a significant contribution to Nostr and/or Crays.
       </p>
 
       <p>
-        You can join the Legend tier by contributing $1000 or more to Primal. As a Primal Legend, you will get:
+        You can join the Legend tier by contributing $1000 or more to Crays. As a Crays Legend, you will get:
       </p>
 
       <ul>
         <li>
-          <b>Forever Premium</b>. Primal Premium subscription never expires for Legends.
+          <b>Forever Premium</b>. Crays Premium subscription never expires for Legends.
         </li>
         <li>
-          <b>Way More Storage</b>. Get 100GB of Primal Premium media storage.
+          <b>Way More Storage</b>. Get 100GB of Crays Premium media storage.
         </li>
         <li>
           <b>Legendary Custom Profile</b>. Options to pick the color of your verified badge, set an avatar glow, and appear on our public list of Legends.

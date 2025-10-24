@@ -604,13 +604,13 @@ const onSocketClose = (closeEvent: CloseEvent) => {
 
   createEffect(() => {
     if (store.appState === 'sleep') {
-      logInfo('Disconnected from Primal socket due to inactivity at: ', (new Date()).toLocaleTimeString())
+      logInfo('Disconnected fromCrayssocket due to inactivity at: ', (new Date()).toLocaleTimeString())
       disconnect(false);
       return;
     }
 
     if (store.appState === 'waking' && socket()?.readyState === WebSocket.CLOSED) {
-      logInfo('Reconnected to Primal socket at: ', (new Date()).toLocaleTimeString());
+      logInfo('Reconnected toCrayssocket at: ', (new Date()).toLocaleTimeString());
       connect();
     }
   })

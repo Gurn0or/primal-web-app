@@ -63,7 +63,7 @@ const PremiumSidebarActive: Component<{
       </div>
 
       <div class={styles.premiumSidebarTitle}>
-        Primal Account
+        Crays Account
       </div>
 
       <div class={styles.premiumSidebarDescription}>
@@ -87,7 +87,7 @@ const PremiumSidebarActive: Component<{
           </Show>
           <li>
             <ButtonLink onClick={() => props.onSidebarAction('changeName')}>
-              <div>Change your Primal name</div> <div class={styles.chevronRight}></div>
+              <div>Change your Crays name</div> <div class={styles.chevronRight}></div>
             </ButtonLink>
           </li>
           <Show when={isLegend()}>

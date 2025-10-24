@@ -14,7 +14,7 @@ import { getDecodedToken, Token } from "@cashu/cashu-ts";
 import styles from './Premium.module.scss';
 import { Dialog } from '@kobalte/core/dialog';
 
-import proLogo from '../../assets/icons/logo_gold.svg';
+import proLogo from '../../assets/icons/logo_fire.png';
 import preston from '../../assets/images/preston.png';
 import ButtonPremium from '../../components/Buttons/ButtonPremium';
 
@@ -36,7 +36,7 @@ const PrimalProInfoDialog: Component<{
                 <div class={styles.productExplain}>
                   <div class={styles.primalProduct}>
                     <div class={styles.productName}>
-                      Primal <span class={styles.productPro}>Pro</span>
+                     Crays<span class={styles.productPro}>Pro</span>
                     </div>
 
                     <div class={styles.productPrice}>
@@ -55,11 +55,11 @@ const PrimalProInfoDialog: Component<{
                       <div class={styles.featureList}>
                         <div class={styles.featureItem}>
                           <div class={styles.checkIcon}></div>
-                          <div class={styles.label}>Primal Studio</div>
+                          <div class={styles.label}>Crays Studio</div>
                         </div>
                         <div class={styles.featureItem}>
                           <div class={styles.checkIcon}></div>
-                          <div class={styles.label}>Legend Status on Primal</div>
+                          <div class={styles.label}>Legend Status on Crays</div>
                         </div>
                         <div class={styles.featureItem}>
                           <div class={styles.checkIcon}></div>
@@ -77,14 +77,14 @@ const PrimalProInfoDialog: Component<{
                     <div class={styles.proOverviewItem}>
                       <img src={proLogo} />
                       <div class={styles.proDescription}>
-                        <h3>Primal Studio</h3>
+                        <h3>Crays Studio</h3>
                         <p>
                           A professional publishing suite for Nostr.
                           Includes authoring tools, media management,
                           smart scheduling, content imports, team collaboration,
                           and content analytics.
                         </p>
-                        <a href="https://studio.primal.net" target='_blank'>studio.primal.net</a>
+                        <a href="https://studio.primal.net" target='_blank'>studio.Crays.net</a>
                       </div>
                     </div>
 
@@ -95,7 +95,7 @@ const PrimalProInfoDialog: Component<{
                         <p>
                           Customizable Legend avatar ring, Legend profile
                           badge and banner, along with the highest level of
-                          features, visibility and recognition on Primal.
+                          features, visibility and recognition on Crays.
                         </p>
                       </div>
                     </div>
@@ -110,7 +110,7 @@ const PrimalProInfoDialog: Component<{
                     }}
                     pro={true}
                   >
-                    Subscribe to Primal Pro
+                    Subscribe to Crays Pro
                   </ButtonPremium>
                 </div>
               </div>

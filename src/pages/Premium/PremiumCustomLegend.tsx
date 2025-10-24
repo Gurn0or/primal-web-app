@@ -182,7 +182,7 @@ const PremiumCustomLegend: Component<{
           </Show>
 
           <div class={styles.shoutoutDesc}>
-            Legend cards contain a personalized shoutout from Primal to all our legends.
+            Legend cards contain a personalized shoutout fromCraysto all our legends.
           </div>
         </div>
 

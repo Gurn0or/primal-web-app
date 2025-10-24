@@ -69,34 +69,6 @@ const Downloads: Component = () => {
       <Show when={!isPhone()}>
         <Wormhole to="search_section">
           <Search />
-          <div
-            class={`${styles.appInfo} ${isIOS() ? styles.appInfoReverse : ""}`}
-          >
-            <Show when={!isAndroid()}>
-              <div class={styles.appStore}>
-                <div class={styles.desktopCTA}>
-                  {intl.formatMessage(t.callToActionIOSTitle)}
-                </div>
-
-                <div class={styles.callToActionIOS}>
-                  <div class={styles.ctaTitle}>
-                    {intl.formatMessage(t.callToActionIOSTitle)}
-                  </div>
-                </div>
-
-                <div class={styles.buidDetails}>
-                  <div>
-                    {displayDate(iosRD()).toLowerCase()} |{" "}
-                    {intl.formatMessage(t.build)} {iosVersion()}
-                  </div>
-                </div>
-
-                <a href={appStoreLink} target="_blank">
-                  <img src={appstoreImg} />
-                </a>
-              </div>
-            </Show>
-          </div>
         </Wormhole>
       </Show>
 
@@ -105,9 +77,35 @@ const Downloads: Component = () => {
       <PageCaption title={intl.formatMessage(t.title)} />
 
       <div class={styles.downloadsContent}>
-        <div class={styles.promoVideo}>
-          <NoteVideo src="https://m.primal.net/MAww.mp4" width={600} />
+        <div
+          class={`${styles.appInfo} ${isIOS() ? styles.appInfoReverse : ""}`}
+        >
+          <Show when={!isAndroid()}>
+            <div class={styles.appStore}>
+              <div class={styles.desktopCTA}>
+                {intl.formatMessage(t.callToActionIOSTitle)}
+              </div>
+
+              <div class={styles.callToActionIOS}>
+                <div class={styles.ctaTitle}>
+                  {intl.formatMessage(t.callToActionIOSTitle)}
+                </div>
+              </div>
+
+              <div class={styles.buidDetails}>
+                <div>
+                  {displayDate(iosRD()).toLowerCase()} |{" "}
+                  {intl.formatMessage(t.build)} {iosVersion()}
+                </div>
+              </div>
+
+              <a href={appStoreLink} target="_blank">
+                <img src={appstoreImg} />
+              </a>
+            </div>
+          </Show>
         </div>
+        {/* <NoteVideo src="https://m.primal.net/MAww.mp4" width={600} /> */}
       </div>
     </div>
   );

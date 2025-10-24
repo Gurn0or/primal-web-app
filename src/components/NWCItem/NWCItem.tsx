@@ -8,7 +8,7 @@ import { A } from '@solidjs/router';
 import { useSettingsContext } from '../../contexts/SettingsContext';
 import PageTitle from '../../components/PageTitle/PageTitle';
 
-import logo from "../../assets/icons/logo.svg";
+import logo from "../../assets/icons/logo_fire.png";
 import ButtonPrimary from '../../components/Buttons/ButtonPrimary';
 import ButtonLink from '../../components/Buttons/ButtonLink';
 import { WalletStatus } from '../../pages/Settings/NostrWalletConnect';

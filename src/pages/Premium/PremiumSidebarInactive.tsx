@@ -20,7 +20,7 @@ const PremiumSidebarInactve: Component<{
 
     <div class={styles.premiumSidebar}>
     <div class={styles.premiumSidebarTitle}>
-      {props.altCaption || 'Why Get Primal Premium/Pro?'}
+      {props.altCaption || 'Why Get Crays Premium/Pro?'}
     </div>
 
     <div class={styles.premiumSidebarDescription}>
@@ -29,7 +29,7 @@ const PremiumSidebarInactve: Component<{
       </p>
 
       <p>
-        At Primal, we don’t rely on advertising. We don’t monetize user data. Our users are our customers. Our sole focus is to make the best possible product for our users. We open source all our work to help the Nostr ecosystem flourish. By signing up for Primal Premium or Pro tier, you are enabling us to continue building for Nostr.
+        At Crays, we don’t rely on advertising. We don’t monetize user data. Our users are our customers. Our sole focus is to make the best possible product for our users. We open source all our work to help the Nostr ecosystem flourish. By signing up for Crays Premium or Pro tier, you are enabling us to continue building for Nostr.
       </p>
 
       <p>

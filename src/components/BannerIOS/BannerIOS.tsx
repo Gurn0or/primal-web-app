@@ -39,7 +39,7 @@ const BannerIOS: Component< { id?: string } > = (props) => {
           <img src={primalWhite} />
           <div class={styles.iosDesc}>
             <div class={styles.title}>Primal</div>
-            <div class={styles.desc}>Open in Primal app</div>
+            <div class={styles.desc}>Open inCraysapp</div>
           </div>
           <img src={openWhite} />
         </div>

@@ -45,8 +45,8 @@ const PremiumRelay: Component<{
         </Show>
         <div class={styles.separator}></div>
         <div class={styles.relayDescription}>
-          The Primal Premium relay is a high-
-          performance Nostr relay that only accepts content from Primal Premium users. Posting to this relay improves your visibility on the Nostr network because it guarantees high signal and lack of spam to any Nostr user that reads from it.
+          The Crays Premium relay is a high-
+          performance Nostr relay that only accepts content from Crays Premium users. Posting to this relay improves your visibility on the Nostr network because it guarantees high signal and lack of spam to any Nostr user that reads from it.
         </div>
         <div class={styles.premiumRelayAddress}>
           <Show

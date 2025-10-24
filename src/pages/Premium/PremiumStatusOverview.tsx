@@ -57,9 +57,9 @@ const PremiumStatusOverview: Component<{
         legendConfig={app?.legendCustomization[props.profile?.pubkey]}
       />
 
-      <Show when={props.data.membershipStatus.cohort_1 === 'Primal OG' && props.data.membershipStatus.cohort_2 === 'Free'}>
+      <Show when={props.data.membershipStatus.cohort_1 === 'Crays OG' && props.data.membershipStatus.cohort_2 === 'Free'}>
         <div class={styles.freeCaption}>
-          Hey there! You are an early Primal user who interacted with our team, so we gave you 6 months of Primal Premium for free. ♥️🫂
+          Hey there! You are an early Crays user who interacted with our team, so we gave you 6 months of Crays Premium for free. ♥️🫂
         </div>
       </Show>
 
@@ -74,7 +74,7 @@ const PremiumStatusOverview: Component<{
         <div class={styles.legendContribution}>
           <div class={styles.current}>
             <div class={styles.label}>
-              Your contribution to Primal:
+              Your contribution to Crays:
             </div>
             <div class={styles.value}>
               {(parseFloat(props.data.membershipStatus.donated_btc || '0') * 100_000_000).toLocaleString()} sats

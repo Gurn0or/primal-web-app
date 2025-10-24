@@ -37,7 +37,7 @@ const PremiumLegendModal: Component<{
       triggerClass="hidden"
       title={
         <div>
-          {props.caption || 'Become a Primal Legend Now'}
+          {props.caption || 'Become aCraysLegend Now'}
         </div>
       }
     >

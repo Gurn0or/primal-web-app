@@ -72,7 +72,7 @@ const PremiumRenameDialog: Component<{
       triggerClass="hidden"
       title={
         <div>
-          Change your primal name
+          Change your crays name
         </div>
       }
     >

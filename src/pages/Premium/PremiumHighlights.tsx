@@ -26,13 +26,13 @@ const PremiumHighlights: Component<{
     <div class={styles.premiumHighlights}>
       <div class={styles.premiumHighlightsTitle}>
         <h1>Primal Premium and Pro</h1>
-        <p>Upgrade your Primal experience today.</p>
+        <p>Upgrade yourCraysexperience today.</p>
       </div>
 
       <div class={styles.productList}>
         <div class={styles.primalProduct}>
           <div class={styles.productName}>
-            Primal <span class={styles.productFree}>Free</span>
+           Crays<span class={styles.productFree}>Free</span>
           </div>
 
           <div class={styles.productPrice}>Free</div>
@@ -65,7 +65,7 @@ const PremiumHighlights: Component<{
 
         <div class={styles.primalProduct}>
           <div class={styles.productName}>
-            Primal <span class={styles.productPremium}>Premium</span>
+           Crays<span class={styles.productPremium}>Premium</span>
           </div>
 
           <div class={styles.productPrice}>
@@ -122,7 +122,7 @@ const PremiumHighlights: Component<{
 
         <div class={styles.primalProduct}>
           <div class={styles.productName}>
-            Primal <span class={styles.productPro}>Pro</span>
+           Crays<span class={styles.productPro}>Pro</span>
           </div>
 
           <div class={styles.productPrice}>

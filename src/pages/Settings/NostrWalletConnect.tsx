@@ -7,7 +7,7 @@ import PageCaption from '../../components/PageCaption/PageCaption';
 import { A } from '@solidjs/router';
 import PageTitle from '../../components/PageTitle/PageTitle';
 
-import logo from "../../assets/icons/logo.svg";
+import logo from "../../assets/icons/logo_fire.png";
 import nwc from "../../assets/icons/nwc.svg";
 import NWCItem from '../../components/NWCItem/NWCItem';
 import AdvancedSearchDialog from '../../components/AdvancedSearch/AdvancedSearchDialog';
@@ -104,7 +104,7 @@ const NostrWalletConnect: Component = () => {
 
     walletSocket.addEventListener('open', async () => {
       logInfo('WALLET SOCKET OPENED');
-      const uri = await connectPrimalWalletActive('Primal Web App', walletSocket);
+      const uri = await connectPrimalWalletActive('Crays Web App', walletSocket);
 
       if (uri.length === 0) {
         return;
@@ -220,11 +220,11 @@ const NostrWalletConnect: Component = () => {
   const primalWalletDesc = () => {
     switch (walletStatus['primal']) {
       case 'connected':
-        return "Your Primal Wallet is connected";
+        return "Your Crays Wallet is connected";
       case 'active':
-        return "Your Primal Wallet is ready to be connected";
+        return "Your Crays Wallet is ready to be connected";
       default:
-        return "Your Primal Wallet is not yet active";
+        return "Your Crays Wallet is not yet active";
     }
   }
 
@@ -239,7 +239,7 @@ const NostrWalletConnect: Component = () => {
 
       <div class={styles.settingsContent}>
         <div class={styles.moderationDescription}>
-          To enable zapping from the Primal web app, connect a wallet:
+          To enable zapping from the Crays web app, connect a wallet:
         </div>
       </div>
 
@@ -247,7 +247,7 @@ const NostrWalletConnect: Component = () => {
         <div class={styles.walletList}>
           <NWCItem
             logo={logo}
-            name="Primal"
+            name="Crays"
             desc={primalWalletDesc()}
             status={walletStatus['primal']}
             onConnect={() => connectToPrimalWallet()}

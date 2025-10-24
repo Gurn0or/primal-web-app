@@ -32,7 +32,7 @@ const PremiumSubscribeModal: Component<{
       triggerClass="hidden"
       title={
         <div>
-          Purchase Primal Premium
+          PurchaseCraysPremium
         </div>
       }
     >

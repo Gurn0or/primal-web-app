@@ -1,6 +1,6 @@
 import { ContentModeration, FeedPage, LnbcInvoice, } from "./types/primal";
 import logoFire from './assets/icons/logo_fire.png';
-import logoIce from './assets/icons/logo_ice.svg';
+import logoIce from './assets/icons/logo_fire.png';
 
 export const second = 1000;
 export const minute = 60 * second;
@@ -437,8 +437,8 @@ export const appStoreLink = 'https://apps.apple.com/in/app/crays/id6749705328';
 // Android
 export const andRD = (new Date('02/02/2024')).getTime();
 export const andVersion = '0.91.2';
-export const playstoreLink = 'https://play.google.com/store/apps/details?id=net.primal.android';
-export const apkLink = `https://github.com/PrimalHQ/primal-android-app/releases/tag/${andVersion}`;
+export const playstoreLink = 'https://apps.apple.com/in/app/crays/id6749705328';
+export const apkLink = `https://apps.apple.com/in/app/crays/id6749705328`;
 
 // ----------------------------------------
 

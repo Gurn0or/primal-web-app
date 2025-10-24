@@ -12,7 +12,7 @@ import odell from '../assets/images/odell.png';
 import preston from '../assets/images/preston.png';
 import pablo from '../assets/images/pablo.png';
 
-import primalLogo from '../assets/icons/logo.svg';
+import primalLogo from '../assets/icons/logo_fire.png';
 import primalName from '../assets/icons/primal.svg';
 
 
@@ -104,14 +104,14 @@ const Landing: Component = () => {
       <div class={styles.landingTestemonials}>
         <div class={styles.testemonial}>
           <p class={styles.pink}>
-            Nostr & Bitcoin Lightning is a game changer. Primal is not just better than Wallet of Satoshi, it is 1000x better than Venmo.
+            Nostr & Bitcoin Lightning is a game changer.Craysis not just better than Wallet of Satoshi, it is 1000x better than Venmo.
           </p>
           <img src={nvk} />
         </div>
 
         <div class={styles.testemonial}>
           <p class={styles.cyan}>
-            Primal is the freedom tech alternative to platforms like Twitter and TikTok. True free speech does not have gatekeepers.</p>
+           Craysis the freedom tech alternative to platforms like Twitter and TikTok. True free speech does not have gatekeepers.</p>
           <img src={odell} />
         </div>
 
@@ -124,7 +124,7 @@ const Landing: Component = () => {
 
         <div class={styles.testemonial}>
           <p class={styles.blue}>
-            The Primal wallet has erased all my memories of other wallets. Having an integrated social graph is a game-changer.
+            TheCrayswallet has erased all my memories of other wallets. Having an integrated social graph is a game-changer.
           </p>
           <img src={pablo} />
         </div>

@@ -979,7 +979,7 @@ const Premium: Component = () => {
             <Switch>
               <Match when={premiumStep() === 'legends'}>
                 <PremiumSidebarInactve
-                  altCaption="About Primal Legends"
+                  altCaption="AboutCraysLegends"
                   onOpenFAQ={() => setPremiumData('openFeatures', () => 'faq')}
                 />
               </Match>
@@ -1104,10 +1104,10 @@ const Premium: Component = () => {
                   <Show
                     when={premiumData.productGroup === 'pro'}
                     fallback={
-                      <div>{subOptionCaption()} Months of Primal Premium</div>
+                      <div>{subOptionCaption()} Months ofCraysPremium</div>
                     }
                   >
-                    <div>{subOptionCaption()} Months of Primal Pro</div>
+                    <div>{subOptionCaption()} Months ofCraysPro</div>
                   </Show>
                 </div>
 
@@ -1118,7 +1118,7 @@ const Premium: Component = () => {
                   />
 
                   <div class={styles.userInfo}>
-                    <div class={styles.explainer}>primal name:</div>
+                    <div class={styles.explainer}>Crays name:</div>
                     <div>{premiumData.name}</div>
                     <div class={premiumData.productGroup === 'pro' ? styles.proCheck : styles.purpleCheck}></div>
                   </div>

@@ -12,7 +12,7 @@ const Csae: Component = () => {
   return (
     <div class={styles.terms} >
       <h1>
-        Primal Child Sexual Abuse and Exploitation (CSAE) Policy
+       CraysChild Sexual Abuse and Exploitation (CSAE) Policy
       </h1>
       <p>
         Last updated: March 26, 2025
@@ -82,7 +82,7 @@ const Csae: Component = () => {
         </h2>
 
         <section>
-          <p>All Primal employees and contractors must:</p>
+          <p>AllCraysemployees and contractors must:</p>
           <ul>
             <li>Complete mandatory child safety and CSAE awareness training annually.</li>
             <li>Promptly report any suspected CSAE content or behavior observed during their work.</li>
@@ -108,7 +108,7 @@ const Csae: Component = () => {
         </h2>
 
         <section>
-          Primal cooperates fully with law enforcement and child protection organizations to ensure that offenders are prosecuted, and victims are protected.
+         Crayscooperates fully with law enforcement and child protection organizations to ensure that offenders are prosecuted, and victims are protected.
         </section>
 
         <h2>
