@@ -39,17 +39,14 @@ const CreateAccount = lazy(() => import('./pages/CreateAccount'));
 
 const NotifSettings = lazy(() => import('./pages/Settings/Notifications'));
 const Account = lazy(() => import('./pages/Settings/Account'));
-const Appearance = lazy(() => import('./pages/Settings/Appearance'));
 const HomeFeeds = lazy(() => import('./pages/Settings/HomeFeeds'));
 const ReadsFeeds = lazy(() => import('./pages/Settings/ReadsFeeds'));
-const DevTools = lazy(() => import('./pages/Settings/DevTools'));
 const ZapSettings = lazy(() => import('./pages/Settings/Zaps'));
 const Muted = lazy(() => import('./pages/Settings/Muted'));
 const Network = lazy(() => import('./pages/Settings/Network'));
 const Moderation = lazy(() => import('./pages/Settings/Moderation'));
 const NostrWalletConnect = lazy(() => import('./pages/Settings/NostrWalletConnect'));
 const Menu = lazy(() => import('./pages/Settings/Menu'));
-const BlossomSettings = lazy(() => import('./pages/Settings/Blossom'));
 // const Landing = lazy(() => import('./pages/Landing'));
 const AppDownloadQr = lazy(() => import('./pages/appDownloadQr'));
 
@@ -159,7 +156,6 @@ const AppRouter: Component = () => {
             <Route path="/network" component={Network} />
             <Route path="/filters" component={Moderation} />
             <Route path="/nwc" component={NostrWalletConnect} />
-            <Route path="/devtools" component={DevTools} />
             <Route path="/uploads" component={Blossom} />
           </Route>
           <Route path="/bookmarks" component={Bookmarks} />

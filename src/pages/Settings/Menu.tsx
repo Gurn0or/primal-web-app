@@ -70,11 +70,6 @@ const Menu: Component = () => {
           </A>
         </Show>
 
-        <A href="/settings/devtools">
-          {intl.formatMessage(t.devTools)}
-          <div class={styles.chevron}></div>
-        </A>
-
         <A href="/settings/network">
           {intl.formatMessage(t.network.title)}
           <div class={styles.chevron}></div>
