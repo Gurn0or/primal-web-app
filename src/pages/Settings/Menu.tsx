@@ -33,11 +33,7 @@ const Menu: Component = () => {
           </A>
         </Show>
 
-        <A href="/settings/appearance">
-          {intl.formatMessage(t.appearance.title)}
-          <div class={styles.chevron}></div>
-        </A>
-
+    
         <A href="/settings/home_feeds">
           {intl.formatMessage(t.homeFeeds.title)}
           <div class={styles.chevron}></div>

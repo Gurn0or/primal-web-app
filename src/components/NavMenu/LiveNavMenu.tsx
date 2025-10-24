@@ -63,14 +63,7 @@ const NavMenu: Component< { id?: string } > = (props) => {
       label: intl.formatMessage(t.downloads),
       icon: 'downloadIcon',
       bubble: () => notifications?.downloadsCount || 0,
-    },
-    {
-      to: '/premium',
-      label: intl.formatMessage(t.premium),
-      icon: 'premiumIcon',
-      hiddenOnSmallScreens: true,
-      bubble: () => account?.premiumReminder ? 1 : 0,
-    },
+    }, 
     {
       to: '/settings',
       label: intl.formatMessage(t.settings),

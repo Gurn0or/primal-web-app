@@ -35,10 +35,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const EditProfile = lazy(() => import('./pages/EditProfile'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Mutelist = lazy(() => import('./pages/Mutelist'));
-const CreateAccount = lazy(() => import('./pages/CreateAccount'));
-const Premium = lazy(() => import('./pages/Premium/Premium'));
-const Legends = lazy(() => import('./pages/Premium/Legends'));
-const Premiums = lazy(() => import('./pages/Premium/Premiums'));
+const CreateAccount = lazy(() => import('./pages/CreateAccount')); 
 
 const NotifSettings = lazy(() => import('./pages/Settings/Notifications'));
 const Account = lazy(() => import('./pages/Settings/Account'));
@@ -154,7 +151,6 @@ const AppRouter: Component = () => {
           <Route path="/settings" component={Settings}>
             <Route path="/" component={Menu} />
             <Route path="/account" component={Account} />
-            <Route path="/appearance" component={Appearance} />
             <Route path="/home_feeds" component={HomeFeeds} />
             <Route path="/reads_feeds" component={ReadsFeeds} />
             <Route path="/notifications" component={NotifSettings} />
@@ -186,9 +182,7 @@ const AppRouter: Component = () => {
             <Route path="/" component={AdvancedSearch} />
             <Route path="/:query" component={AdvancedSearchResults} />
           </Route>
-          <Route path="/premium/:step?" component={Premium} />
-          <Route path="/premiums" component={Premiums} />
-          <Route path="/legends" component={Legends} />
+ 
           <Route path="/:vanityName">
             <Route path="/" component={Profile} preload={getKnownProfiles} />
             <Route path="/live/:streamId?" component={Streaming} />

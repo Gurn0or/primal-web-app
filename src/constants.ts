@@ -1,5 +1,5 @@
 import { ContentModeration, FeedPage, LnbcInvoice, } from "./types/primal";
-import logoFire from './assets/icons/logo_fire.svg';
+import logoFire from './assets/icons/logo_fire.png';
 import logoIce from './assets/icons/logo_ice.svg';
 
 export const second = 1000;
@@ -430,9 +430,9 @@ export const today = (new Date()).getTime();
 
 // Downloads page info --------------------
 // iOS
-export const iosRD = (new Date('12/19/2023')).getTime();
+export const iosRD = (new Date('01/19/2025')).getTime();
 export const iosVersion = '1.1.10';
-export const appStoreLink = 'https://apps.apple.com/us/app/primal/id1673134518';
+export const appStoreLink = 'https://apps.apple.com/in/app/crays/id6749705328';
 
 // Android
 export const andRD = (new Date('02/02/2024')).getTime();
