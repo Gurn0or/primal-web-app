@@ -134,7 +134,7 @@ const AppRouter: Component = () => {
           <Route path="/dms/:contact?" component={DirectMessages} />
           <Route path="/notifications" component={Notifications} />
           <Route path="/downloads" component={Downloads} />
-          <Route path="/download" component={() => <Navigate href='/downloads' />} />;
+          <Route path="/download" component={() => <Navigate href="/downloads" />} />;
           <Route path="/settings" component={Settings}>
             <Route path="/" component={Menu} />
             <Route path="/account" component={Account} />
@@ -168,13 +168,13 @@ const AppRouter: Component = () => {
             <Route path="/" component={AdvancedSearch} />
             <Route path="/:query" component={AdvancedSearchResults} />
           </Route>
-          <Route path="/Cryptonomicon" component={CryptoRedirect} />
+          <Route path="/Cryptonomicon" element={<CryptoRedirect />} />
           <Route path="/:vanityName">
             <Route path="/" component={Profile} preload={getKnownProfiles} />
             <Route path="/live/:streamId?" component={Streaming} />
             <Route path="/:identifier" component={Thread} preload={getKnownProfiles} />
           </Route>
-          <Route path="/rc/:code?" component={() => <Navigate href='/app-download-qr' />}/>
+          <Route path="/rc/:code?" component={() => <Navigate href="/app-download-qr" />}/>
           <Route path="/citadel_stream" component={CitadelPage} />
           <Route path="/404" component={NotFound} />
         </Route>
