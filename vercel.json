@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/Cryptonomicon",
+      "destination": "/p/nprofile1qqsxzyttdge3z04sunl2984zhj230gahmqs37pcw5p8zxdwxdfs772cw3pjtq"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }
