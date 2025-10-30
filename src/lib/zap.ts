@@ -9,11 +9,8 @@ import { decodeNWCUri } from "./wallet";
 import { hexToBytes, parseBolt11 } from "../utils";
 import { convertToUser } from "../stores/profile";
 import { StreamingData } from "./streaming";
-
-// Breez SDK imports (assumed available in project)
-// If the SDK utilities are located elsewhere, adjust import paths accordingly
-// COMMENTED OUT TEMPORARILY TO FIX DEPLOYMENT
-// import { breezPayInvoice } from "../wallets/breez";
+// Breez SDK Spark import
+import { breezPayInvoice } from "./breez/breezPayments";
 
 export let lastZapError: string = "";
 
@@ -25,7 +22,6 @@ export const zapOverNWC = async (pubkey: string, nwcEnc: string, invoice: string
   try {
     const nwc = await decrypt(pubkey, nwcEnc);
     const nwcConfig = decodeNWCUri(nwc);
-
     const request = await nip47.makeNwcRequestEvent(nwcConfig.pubkey, hexToBytes(nwcConfig.secret), invoice)
 
     if (nwcConfig.relays.length === 0) return false;
@@ -34,190 +30,92 @@ export const zapOverNWC = async (pubkey: string, nwcEnc: string, invoice: string
       const relay = relayInit(nwcConfig.relays[i]);
 
       promises.push(new Promise(async (resolve) => {
-        await relay.connect();
+        try {
+          await relay.connect();
 
-        relays.push(relay);
+          relays.push(relay);
 
-        const subInfo = relay.subscribe({
-          kinds: [nip47.KIND_NWC_REQUEST],
-          ids: [request.id],
-        });
+          let isResolved = false;
 
-        relay.on('notice', (n: string) => console.log('notice', n));
-        relay.on('connect', () => console.log('connected'));
-        relay.on('error', (e: any) => console.log('error', e));
+          const sub = relay.sub([{ kinds: [23195], "#e": [request.id] }]);
 
-        subInfo.on('event', (event: any) => {
-          try {
-            const res = nip47.parseNwcResponseEvent(event, hexToBytes(nwcConfig.secret));
-            if (res.result_type === 'pay_invoice') {
-              result = true;
-              resolve(true);
+          sub.on('event', (event: any) => {
+            try {
+              const decryptedContent = nip04.decrypt(nwcConfig.secret, nwcConfig.pubkey, event.content);
+
+              const content = JSON.parse(decryptedContent);
+
+              if (content.result) {
+                result = true;
+              }
             }
-          } catch (e) {}
-        });
+            catch (e: any) {
+              logError('Failed to decrypt payment response from NWC', e);
+            }
+            finally {
+              sub.unsub();
+              if (!isResolved) {
+                isResolved = true;
+                resolve(result);
+              }
+            }
+          });
 
-        const ok = await relay.publish(request);
+          const signedEvent = await signEvent(request);
 
-        setTimeout(() => resolve(false), 8000);
+          if (!signedEvent) {
+            throw ('Failed to sign event');
+          }
+
+          relay.publish(signedEvent);
+        }
+        catch (e) {
+          resolve(false);
+        }
       }));
     }
 
     await Promise.all(promises);
 
-    relays.forEach(r => { r && r.close(); });
-
     return result;
-  } catch (error) {
-    logError('zapOverNWC error: ', error);
-    lastZapError = 'Failed to zap over NWC';
+  }
+  catch (e: any) {
+    logError('Failed to send payment over NWC', e);
     return false;
   }
-};
-
-// COMMENTED OUT TEMPORARILY TO FIX DEPLOYMENT
-// async function tryBreez(invoice: string, useBreez?: boolean): Promise<boolean> {
-//   if (!useBreez) return false;
-//   try {
-//     await breezPayInvoice(invoice);
-//     return true;
-//   } catch (error) {
-//     logError('tryBreez error: ', error);
-//     return false;
-//   }
-// }
-
-const payInvoice = async (invoice: string, options?: { useBreez?: boolean }): Promise<boolean> => {
-  const { useBreez } = options || {};
-  // COMMENTED OUT TEMPORARILY TO FIX DEPLOYMENT
-  // if (await tryBreez(invoice, useBreez)) return true;
-  try {
-    await enableWebLn();
-    await sendPayment(invoice);
-    return true;
-  } catch (error) {
-    logError('payInvoice error: ', error);
-    lastZapError = 'Failed to pay invoice';
-    return false;
-  }
-};
-
-export const zapNote = async (
-  note: PrimalNote,
-  amountMsat: number,
-  message: string,
-  useBreez?: boolean
-): Promise<boolean> => {
-  try {
-    const invoice = await createZapInvoiceForNote(note, amountMsat, message);
-    return await payInvoice(invoice, { useBreez });
-  } catch (e) {
-    logError('zapNote error: ', e);
-    lastZapError = 'Failed to zap note';
-    return false;
+  finally {
+    relays.forEach((r) => r.close());
   }
 }
 
-export const zapArticle = async (
-  article: PrimalArticle,
-  amountMsat: number,
-  message: string,
-  useBreez?: boolean
-): Promise<boolean> => {
+// Breez SDK Spark payment function
+const tryBreez = async (invoice: string): Promise<boolean> => {
   try {
-    const invoice = await createZapInvoiceForArticle(article, amountMsat, message);
-    return await payInvoice(invoice, { useBreez });
-  } catch (e) {
-    logError('zapArticle error: ', e);
-    lastZapError = 'Failed to zap article';
+    const result = await breezPayInvoice(invoice);
+    return result.success;
+  } catch (error: any) {
+    lastZapError = error.message || 'Breez payment failed';
+    logError('Breez payment error', error);
     return false;
   }
-}
-
-export const zapProfile = async (
-  profile: PrimalUser,
-  amountMsat: number,
-  message: string,
-  useBreez?: boolean
-): Promise<boolean> => {
-  try {
-    const invoice = await createZapInvoiceForProfile(profile, amountMsat, message);
-    return await payInvoice(invoice, { useBreez });
-  } catch (e) {
-    logError('zapProfile error: ', e);
-    lastZapError = 'Failed to zap profile';
-    return false;
-  }
-}
-
-export const zapStream = async (
-  stream: StreamingData,
-  amountMsat: number,
-  message: string,
-  useBreez?: boolean
-): Promise<boolean> => {
-  try {
-    const invoice = await createZapInvoiceForStream(stream, amountMsat, message);
-    return await payInvoice(invoice, { useBreez });
-  } catch (e) {
-    logError('zapStream error: ', e);
-    lastZapError = 'Failed to zap stream';
-    return false;
-  }
-}
-
-export const convertToZaps = (zapsInfo: NostrUserZaps): PrimalZap[] => {
-  const zapsList = Object.keys(zapsInfo.zaps).reduce<any[]>((acc, key) => {
-    const z = zapsInfo.zaps[key];
-    return [...acc, { ...z }];
-  }, []);
-
-  return zapsList.map((zapInfo) => {
-
-    const zapEvent = zapsInfo.zapEvents.find((e) => e.id === zapInfo.zap_receipt_id) || { pubkey: ''};
-
-    return convertToZap(zapInfo, zapsInfo, zapEvent);
-  });
 };
 
-export const convertToZap = (zapInfo: any, zapsInfo: NostrUserZaps, zapEvent?: NostrRelaySignedEvent) => {
-  const sender = zapsInfo.users ? zapsInfo.users.find((u) => {
-    return u.pubkey === zapInfo.sender;
-  }) : undefined;
+export const payInvoice = async (invoice: string, pubkey?: string, nwcEnc?: string) => {
+  // Try Breez SDK Spark first
+  const breezSuccess = await tryBreez(invoice);
+  if (breezSuccess) return true;
 
-  const reciver = zapsInfo.users.find((u) => {
-    return u.pubkey === zapInfo.receiver;
-  });
+  // Fallback to WebLN if Breez fails
+  const wlnSuccess = await sendPayment(invoice);
+  if (wlnSuccess) return true;
 
-  return {
-    id: zapInfo.zap_receipt_id,
-    message: zapInfo.message,
-    amount: zapInfo.amount_sats,
-    sender: sender ? convertToUser(sender) : undefined,
-    reciver: reciver ? convertToUser(reciver) : undefined,
-    created_at: zapInfo.created_at || 0,
-    pubkey: zapEvent?.pubkey,
-  };
-};
-
-export const parseZapNote = (zap?: PrimalZap, page?: MegaFeedPage) => {
-  if (!zap) {
-    return undefined;
+  // Fallback to NWC if both Breez and WebLN fail
+  if (pubkey && nwcEnc) {
+    const nwcSuccess = await zapOverNWC(pubkey, nwcEnc, invoice);
+    if (nwcSuccess) return true;
   }
 
-  const zapInfo = JSON.parse(zap.message || '{}');
-
-  return page?.notes.find(n => n.post.noteId === nip19.noteEncode(zapInfo.e));
-};
-
-export const parseZapArticle = (zap?: PrimalZap, page?: MegaFeedPage) => {
-  if (!zap) {
-    return undefined;
-  }
-
-  const zapInfo = JSON.parse(zap.message || '{}');
-
-  return page?.articles.find(a => a.naddr === zapInfo.a);
+  return false;
 };
 
 export const parseZapPayload = (zap: PrimalZap) => {
@@ -238,7 +136,6 @@ export const topZapFeed = (zaps: PrimalZap[]): TopZap[] => {
     const key = zap.sender.pubkey || '';
 
     const zapAmount = acc[key] === undefined ? 0 : acc[key].amount;
-
     const zapCount = acc[key] === undefined ? 0 : acc[key].amount_count;
 
     return {
