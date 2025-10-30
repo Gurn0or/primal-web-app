@@ -51,7 +51,7 @@ const Feeds = lazy(() => import('./pages/FeedsTest'));
 const Feed = lazy(() => import('./pages/Feed'));
 const AdvancedSearch = lazy(() => import('./pages/AdvancedSearch'));
 const AdvancedSearchResults = lazy(() => import('./pages/AdvancedSearchResults'));
-const Streaming = lazy(() => import('./pages/Streaming'));
+const Streaming = lazy(() => import('./pages/StreamPage'));
 const CitadelPage = lazy(() => import('./pages/CitadelPage'));
 
 export type PrimalRoute = {
