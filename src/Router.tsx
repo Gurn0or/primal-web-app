@@ -14,7 +14,6 @@ import { useSearchContext } from './contexts/SearchContext';
 import { useDMContext } from './contexts/DMContext';
 import { generateNsec, nip19 } from './lib/nTools';
 import Blossom from './pages/Settings/Blossom';
-
 const Home = lazy(() => import('./pages/Home'));
 const Reads = lazy(() => import('./pages/Reads'));
 const Layout = lazy(() => import('./components/Layout/Layout'));
@@ -48,7 +47,7 @@ const Menu = lazy(() => import('./pages/Settings/Menu'));
 const AppDownloadQr = lazy(() => import('./pages/appDownloadQr'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Privacy = lazy(() => import('./pages/Privacy'));
-const Feeds = lazy(() => import('./pages/Feeds'));
+const Feeds = lazy(() => import('./pages/FeedsTest'));
 const Feed = lazy(() => import('./pages/Feed'));
 const AdvancedSearch = lazy(() => import('./pages/AdvancedSearch'));
 const AdvancedSearchResults = lazy(() => import('./pages/AdvancedSearchResults'));
