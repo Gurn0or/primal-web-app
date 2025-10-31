@@ -9,7 +9,7 @@ import {
   type EnvironmentType,
 } from '@breeztech/breez-sdk-spark';
 
-import { initBreezSDK, getBreezSDK, disconnectBreezSDK } from './breezInit';
+import { initBreezSDK, getBreezSDK, disconnectBreezSDK, isBreezSDKInitialized } from './breezInit';
 import type { InitOptions, PayResult, InvoiceResult, WalletBalance, HistoryFilter } from './breezTypes';
 
 /**
@@ -67,4 +67,13 @@ export class BreezWallet {
   isInitialized(): boolean {
     return this.sdk !== null;
   }
+}
+
+// Standalone function exports for UI compatibility
+export async function initBreezWallet(apiKey: string, environment: EnvironmentType = 'production'): Promise<void> {
+  await initBreezSDK(apiKey, environment);
+}
+
+export function isWalletInitialized(): boolean {
+  return isBreezSDKInitialized();
 }
