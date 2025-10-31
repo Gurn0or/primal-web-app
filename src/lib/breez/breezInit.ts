@@ -1,5 +1,5 @@
-import { BreezSDKSpark } from '@breeztech/breez-sdk-spark-web';
-import type { Config, ConnectRequest, EnvironmentType } from '@breeztech/breez-sdk-spark-web';
+import { BreezSDKSpark } from '@breeztech/breez-sdk-spark';
+import type { Config, ConnectRequest, EnvironmentType } from '@breeztech/breez-sdk-spark';
 
 let breezSDK: BreezSDKSpark | null = null;
 
