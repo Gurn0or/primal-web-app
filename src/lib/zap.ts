@@ -9,7 +9,6 @@ import { decodeNWCUri } from "./wallet";
 import { hexToBytes, parseBolt11 } from "../utils";
 import { convertToUser } from "../stores/profile";
 import { StreamingData } from "./streaming";
-
 // Breez SDK Spark import
 import { payInvoice as breezPayInvoice } from "./breez/breezPayments";
 
@@ -26,8 +25,7 @@ export const zapNote = async (
   amount: number,
   message: string,
   relays: string[],
-  nwcEnc?: string
-): Promise<boolean> => {
+  nwcEnc?: string): Promise<boolean> => {
   try {
     const invoice = await createZapInvoiceForNote(note, amount, message);
     
@@ -36,15 +34,10 @@ export const zapNote = async (
       return false;
     }
 
-    if (nwcEnc) {
-      const success = await zapOverNWC(pubkey, nwcEnc, invoice);
-      if (success) return true;
-    }
-
-    return await payInvoice(invoice, 'webln');
-  } catch (e: any) {
-    lastZapError = e.message || 'Zap failed';
-    logError(e);
+    return await payInvoice(invoice, pubkey, relays, nwcEnc);
+  } catch (error: any) {
+    logError('zapNote error', error);
+    lastZapError = error.message || 'Failed to zap note';
     return false;
   }
 };
@@ -55,8 +48,7 @@ export const zapArticle = async (
   amount: number,
   message: string,
   relays: string[],
-  nwcEnc?: string
-): Promise<boolean> => {
+  nwcEnc?: string): Promise<boolean> => {
   try {
     const invoice = await createZapInvoiceForArticle(article, amount, message);
     
@@ -65,211 +57,94 @@ export const zapArticle = async (
       return false;
     }
 
-    if (nwcEnc) {
-      const success = await zapOverNWC(pubkey, nwcEnc, invoice);
-      if (success) return true;
-    }
-
-    return await payInvoice(invoice, 'webln');
-  } catch (e: any) {
-    lastZapError = e.message || 'Zap failed';
-    logError(e);
+    return await payInvoice(invoice, pubkey, relays, nwcEnc);
+  } catch (error: any) {
+    logError('zapArticle error', error);
+    lastZapError = error.message || 'Failed to zap article';
     return false;
   }
 };
 
 export const zapProfile = async (
-  profile: PrimalUser,
+  user: PrimalUser,
   pubkey: string,
   amount: number,
   message: string,
   relays: string[],
-  nwcEnc?: string
-): Promise<boolean> => {
+  nwcEnc?: string): Promise<boolean> => {
   try {
-    const invoice = await createZapInvoiceForProfile(profile, amount, message);
+    const invoice = await createZapInvoiceForProfile(user, amount, message);
     
     if (!invoice) {
       lastZapError = 'Failed to create invoice';
       return false;
     }
 
-    if (nwcEnc) {
-      const success = await zapOverNWC(pubkey, nwcEnc, invoice);
-      if (success) return true;
-    }
-
-    return await payInvoice(invoice, 'webln');
-  } catch (e: any) {
-    lastZapError = e.message || 'Zap failed';
-    logError(e);
-    return false;
-  }
-};
-
-export const zapDVM = async (
-  dvm: PrimalDVM,
-  dvmUser: PrimalUser,
-  pubkey: string,
-  amount: number,
-  message: string,
-  relays: string[]
-): Promise<boolean> => {
-  try {
-    // For DVM, we might need a different invoice creation approach
-    // Using profile invoice as fallback
-    const invoice = await createZapInvoiceForProfile(dvmUser, amount, message);
-    
-    if (!invoice) {
-      lastZapError = 'Failed to create invoice';
-      return false;
-    }
-
-    return await payInvoice(invoice, 'webln');
-  } catch (e: any) {
-    lastZapError = e.message || 'Zap failed';
-    logError(e);
+    return await payInvoice(invoice, pubkey, relays, nwcEnc);
+  } catch (error: any) {
+    logError('zapProfile error', error);
+    lastZapError = error.message || 'Failed to zap profile';
     return false;
   }
 };
 
 export const zapStream = async (
   stream: StreamingData,
-  streamAuthor: PrimalUser,
   pubkey: string,
   amount: number,
   message: string,
   relays: string[],
-  nwcEnc?: string
-): Promise<{success: boolean, event?: any}> => {
+  nwcEnc?: string): Promise<boolean> => {
   try {
     const invoice = await createZapInvoiceForStream(stream, amount, message);
     
     if (!invoice) {
       lastZapError = 'Failed to create invoice';
-      return {success: false};
+      return false;
     }
 
-    let paymentSuccess = false;
-    if (nwcEnc) {
-      paymentSuccess = await zapOverNWC(pubkey, nwcEnc, invoice);
-    }
-
-    if (!paymentSuccess) {
-      paymentSuccess = await payInvoice(invoice, 'webln');
-    }
-
-    return {success: paymentSuccess, event: null};
-  } catch (e: any) {
-    lastZapError = e.message || 'Zap failed';
-    logError(e);
-    return {success: false};
+    return await payInvoice(invoice, pubkey, relays, nwcEnc);
+  } catch (error: any) {
+    logError('zapStream error', error);
+    lastZapError = error.message || 'Failed to zap stream';
+    return false;
   }
 };
 
-export const zapOverNWC = async (pubkey: string, nwcEnc: string, invoice: string) => {
-  let promises: Promise<boolean>[] = [];
-  let relays: Relay[] = [];
-  let result: boolean = false;
-
-  try {
-    const nwc = await decrypt(pubkey, nwcEnc);
-    const nwcConfig = decodeNWCUri(nwc);
-    const request = await nip47.makeNwcRequestEvent(nwcConfig.pubkey, hexToBytes(nwcConfig.secret), invoice);
-
-    if (nwcConfig.relays.length === 0) return false;
-
-    for (let i = 0; i < nwcConfig.relays.length; i++) {
-      const relay = relayInit(nwcConfig.relays[i]);
-      promises.push(new Promise(async (resolve) => {
-        try {
-          await relay.connect();
-          relays.push(relay);
-          const published = relay.publish(request);
-          published.on('ok', () => {
-            result = true;
-            resolve(true);
-          });
-          published.on('failed', () => {
-            resolve(false);
-          });
-        } catch (error) {
-          logError(error);
-          resolve(false);
-        }
-      }));
-    }
-
-    await Promise.any(promises);
-    return result;
-  } catch (e) {
-    logError(e);
-    return false;
-  } finally {
-    for (let i = 0; i < relays.length; i++) {
-      relays[i].close();
-    }
-  }
-}
-
-export const payInvoice = async (invoice: string, paymentMethod?: 'webln' | 'nwc' | 'breez') => {
-  lastZapError = '';
-
-  if (!paymentMethod) {
-    lastZapError = 'No payment method specified';
-    return false;
-  }
-
-  try {
-    if (paymentMethod === 'webln') {
-      const webln = await enableWebLn();
-      if (!webln) {
-        lastZapError = 'WebLN not available';
-        return false;
-      }
-      const result = await sendPayment(invoice);
-      return !!result;
-    } else if (paymentMethod === 'breez') {
-      const result = await breezPayInvoice(invoice);
-      return result;
-    }
-  } catch (e: any) {
-    lastZapError = e.message || 'Payment failed';
-    logError(e);
-    return false;
-  }
-
-  return false;
-};
-
-export const parseZapPayload = (zapEvent: NostrRelaySignedEvent, subId?: string) => {
-  const zap: PrimalZap = {
+export const parseZapEvent = (zapEvent: NostrRelaySignedEvent): PrimalZap | undefined => {
+  let zap: PrimalZap = {
     id: zapEvent.id,
     message: '',
     amount: 0,
-    pubkey: zapEvent.pubkey,
+    pubkey: '',
     eventId: '',
-    sender: undefined,
-    reciver: undefined,
+    created_at: zapEvent.created_at,
   };
 
-  const bolt11Tag = zapEvent.tags.find(t => t[0] === 'bolt11');
+  const bolt11Tag = zapEvent.tags.find((t: string[]) => t[0] === 'bolt11');
 
   if (bolt11Tag) {
-    const decoded = parseBolt11(bolt11Tag[1]);
-    zap.amount = decoded?.amount || 0;
+    const bolt11 = bolt11Tag[1];
+    const amountMatch = bolt11.match(/lnbc(\d+)/i);
+    if (amountMatch) {
+      const btc = parseInt(amountMatch[1]);
+      zap.amount = btc / 100_000_000_000; // Convert to BTC
+    }
   }
 
-  const description = zapEvent.tags.find(t => t[0] === 'description');
+  const description = zapEvent.tags.find((t: string[]) => t[0] === 'description');
+
   if (description) {
     try {
       const zapRequest = JSON.parse(description[1]);
       zap.message = zapRequest.content;
       zap.pubkey = zapRequest.pubkey;
+
       const pTag = zapRequest.tags.find((t: string[]) => t[0] === 'p');
       if (pTag) {
         zap.reciver = pTag[1];
       }
+
       const eTag = zapRequest.tags.find((t: string[]) => t[0] === 'e');
       if (eTag) {
         zap.eventId = eTag[1];
@@ -285,7 +160,6 @@ export const parseZapPayload = (zapEvent: NostrRelaySignedEvent, subId?: string)
 export const topZapFeed = (page: MegaFeedPage) => {
   const sorted = page.topZaps.sort((a, b) => b.amount - a.amount);
   const zapList: TopZap[] = [];
-
   for (let i = 0; i < sorted.length; i++) {
     const zap = sorted[i];
     zapList.push({
@@ -293,7 +167,6 @@ export const topZapFeed = (page: MegaFeedPage) => {
       sender: page.users[zap.pubkey],
     });
   }
-
   return zapList;
 };
 
@@ -312,4 +185,130 @@ export const createZapInvoiceForProfile = async (user: PrimalUser, amount: numbe
 
 export const createZapInvoiceForStream = async (stream: StreamingData, amount: number, message?: string): Promise<string> => {
   throw new Error('stub');
+};
+
+export const zapSubscription = async (
+  tier: any,
+  amountMsat: number,
+  message: string
+): Promise<boolean> => {
+  try {
+    const invoice = await createZapInvoiceForSubscription(tier, amountMsat, message);
+    return await payInvoice(invoice);
+  } catch (error: any) {
+    logError('zapSubscription error', error);
+    lastZapError = error.message || 'Failed to zap subscription';
+    return false;
+  }
+};
+
+async function createZapInvoiceForSubscription(tier: any, amountMsat: number, message: string): Promise<string> {
+  throw new Error('stub - createZapInvoiceForSubscription not implemented');
+}
+
+export const payInvoice = async (
+  invoice: string,
+  pubkey?: string,
+  relays?: string[],
+  nwcEnc?: string
+): Promise<boolean> => {
+  try {
+    // Try Breez SDK first
+    try {
+      const result = await breezPayInvoice(invoice);
+      if (result) {
+        return true;
+      }
+    } catch (breezError) {
+      logError('Breez payment failed, trying fallback', breezError);
+    }
+
+    // Fallback to WebLN or NWC
+    if (nwcEnc) {
+      return await payWithNWC(invoice, nwcEnc, pubkey, relays);
+    }
+
+    // Try WebLN
+    const webln = await enableWebLn();
+    if (webln) {
+      const result = await sendPayment(invoice);
+      return !!result.preimage;
+    }
+
+    lastZapError = 'No payment method available';
+    return false;
+  } catch (error: any) {
+    logError('payInvoice error', error);
+    lastZapError = error.message || 'Failed to pay invoice';
+    return false;
+  }
+};
+
+const payWithNWC = async (
+  invoice: string,
+  nwcEnc: string,
+  pubkey?: string,
+  relays?: string[]
+): Promise<boolean> => {
+  if (!pubkey || !relays) {
+    throw new Error('Missing pubkey or relays for NWC payment');
+  }
+
+  try {
+    const nwcUri = await decrypt(pubkey, nwcEnc);
+    const nwc = decodeNWCUri(nwcUri);
+    
+    const relay = relayInit(nwc.relay);
+    await relay.connect();
+
+    const payRequest = {
+      method: 'pay_invoice',
+      params: {
+        invoice,
+      },
+    };
+
+    const encryptedContent = await encrypt(nwc.pubkey, JSON.stringify(payRequest));
+    
+    const event = await signEvent({
+      kind: Kind.NWC,
+      content: encryptedContent,
+      tags: [['p', nwc.pubkey]],
+      created_at: Math.floor(Date.now() / 1000),
+    });
+
+    await relay.publish(event);
+
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        relay.close();
+        reject(new Error('NWC payment timeout'));
+      }, 30000);
+
+      const sub = relay.subscribe(
+        [{
+          kinds: [Kind.NWCResponse],
+          authors: [nwc.pubkey],
+          '#p': [pubkey],
+        }],
+        {
+          onevent: async (responseEvent: any) => {
+            clearTimeout(timeout);
+            const decrypted = await decrypt(nwc.pubkey, responseEvent.content);
+            const response = JSON.parse(decrypted);
+            
+            relay.close();
+            
+            if (response.result?.preimage) {
+              resolve(true);
+            } else {
+              reject(new Error(response.error?.message || 'Payment failed'));
+            }
+          },
+        }
+      );
+    });
+  } catch (error: any) {
+    throw new Error(`NWC payment failed: ${error.message}`);
+  }
 };
