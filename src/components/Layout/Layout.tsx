@@ -1,4 +1,4 @@
-import { Component, JSX, Show, createEffect, createSignal, onMount, on } from 'solid-js';
+import { Component, createEffect, createSignal, JSX, Show, on, onMount } from 'solid-js';
 import { useLocation } from '@solidjs/router';
 import { isPhone } from '../../lib/media';
 import { useAccountContext } from '../../contexts/AccountContext';
@@ -34,161 +34,129 @@ import Downloads from '../../pages/Downloads';
 import Messages from '../../pages/Messages';
 import Bookmarks from '../../pages/Bookmarks';
 import Settings from '../../pages/Settings';
-import Search from '../../pages/Search';
-import Thread from '../../pages/Thread';
-import Profile from '../../pages/Profile';
-import EditProfile from '../../pages/EditProfile';
-import Notifications from '../../pages/Notifications';
-import Help from '../../pages/Help';
-import Verification from '../../pages/Verification';
-import Signin from '../../pages/Signin';
-import NotFound from '../../pages/NotFound';
-import Article from '../../pages/Article';
-import ArticleEditor from '../../pages/ArticleEditor';
-import ProfileQrCode from '../../pages/ProfileQrCode';
-import NewNote from '../../pages/NewNote';
-import Drafts from '../../pages/Drafts';
-import MediaUpload from '../../pages/MediaUpload';
-import { Redirect, Route, Routes } from '@solidjs/router';
-import SearchPage from '../../pages/SearchPage';
-import WalletSettings from '../../pages/WalletSettings';
-import Media from '../../pages/Media';
-import MessagesNew from '../../pages/MessagesNew';
-import ArticleEditorLong from '../../pages/ArticleEditorLong';
-import Muted from '../../pages/Muted';
-import Relays from '../../pages/Relays';
-import NavSidebar from '../NavSidebar/NavSidebar';
-import NavFooter from '../NavFooter/NavFooter';
-import NavHeader from '../NavHeader/NavHeader';
-import RightSidebar from '../RightSidebar/RightSidebar';
-import { pageTitle } from '../../translations';
-import { Helmet, HelmetProvider } from 'solid-helmet-async';
-import SidebarStore from '../../megaFeeds/sidebar';
-import { useMegaFeedContext } from '../../contexts/MegaFeedContext';
-import NetworkSettings from '../../pages/NetworkSettings';
 
-const Layout: Component<{ children: JSX.Element }> = (props) => {
+const Layout: Component<{ children?: JSX.Element }> = (props) => {
+  const intl = useIntl();
+  const location = useLocation();
   const account = useAccountContext();
   const app = useAppContext();
-  const location = useLocation();
-  const intl = useIntl();
-  const megaFeed = useMegaFeedContext();
 
-  const [isHome, setIsHome] = createSignal(false);
-
-  const isAnimating = () => {
-    return account?.isZapping === 'in_progress';
-  };
-
-  const isCustomZap = () => {
-    return account?.isZapping === 'custom';
-  };
-
-  const onZapAnimationComplete = () => {
-    account?.actions.resetZapState();
-  };
-
-  const onCustomZapClose = () => {
-    account?.actions.resetZapState();
-  };
+  const [sidebarVisible, setSidebarVisible] = createSignal(true);
 
   createEffect(
     on(
       () => location.pathname,
-      (path) => {
-        setIsHome(path === '/' || path === '/home');
-      }
-    )
+      (pathname) => {
+        const hideSidebarPaths = [
+          '/messages',
+          '/settings',
+          '/help',
+        ];
+
+        const shouldHideSidebar = hideSidebarPaths.some((path) =>
+          pathname.startsWith(path)
+        );
+
+        setSidebarVisible(!shouldHideSidebar);
+      },
+    ),
   );
 
   onMount(() => {
-    setIsHome(location.pathname === '/' || location.pathname === '/home');
+    // Any initialization logic
   });
 
   return (
     <div class={styles.layout}>
-      <HelmetProvider>
-        <Helmet>
-          <title>{pageTitle[location.pathname] || intl.formatMessage({ id: 'app.name', defaultMessage: 'Primal', description: 'Primal app name' })}</title>
-        </Helmet>
-      </HelmetProvider>
-      <Show when={isPhone()}>
-        <LayoutPhone>{props.children}</LayoutPhone>
+      <Show
+        when={!isPhone()}
+        fallback={
+          <LayoutPhone sidebarVisible={sidebarVisible()}>
+            {props.children}
+          </LayoutPhone>
+        }
+      >
+        <LayoutDesktop sidebarVisible={sidebarVisible()}>
+          {props.children}
+        </LayoutDesktop>
       </Show>
-      <Show when={!isPhone()}>
-        <div class={styles.desktopWrapper}>
-          <NavSidebar />
-          <div class={styles.centerContent}>
-            <Routes>
-              <Route path="/" component={Home} />
-              <Route path="/home" component={Home} />
-              <Route path="/explore" component={Explore} />
-              <Route path="/reads" component={Reads} />
-              <Route path="/downloads" component={Downloads} />
-              <Route path="/messages" component={Messages} />
-              <Route path="/messages/new" component={MessagesNew} />
-              <Route path="/messages/:sender" component={Messages} />
-              <Route path="/bookmarks" component={Bookmarks} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/settings/wallet" component={WalletSettings} />
-              <Route path="/settings/network" component={NetworkSettings} />
-              <Route path="/settings/muted" component={Muted} />
-              <Route path="/settings/relays" component={Relays} />
-              <Route path="/search/:query" component={SearchPage} />
-              <Route path="/e/:noteId" component={Thread} />
-              <Route path="/p/:npub" component={Profile} />
-              <Route path="/p/:npub/followers" component={Profile} />
-              <Route path="/p/:npub/following" component={Profile} />
-              <Route path="/p/:npub/relays" component={Profile} />
-              <Route path="/p/:npub/zaps" component={Profile} />
-              <Route path="/profile" component={EditProfile} />
-              <Route path="/notifications" component={Notifications} />
-              <Route path="/help" component={Help} />
-              <Route path="/verification" component={Verification} />
-              <Route path="/signin" component={Signin} />
-              <Route path="/article/:naddr" component={Article} />
-              <Route path="/a/:naddr" component={Article} />
-              <Route path="/article/editor" component={ArticleEditor} />
-              <Route path="/drafts" component={Drafts} />
-              <Route path="/profileQr" component={ProfileQrCode} />
-              <Route path="/new" component={NewNote} />
-              <Route path="/media" component={Media} />
-              <Route path="/media/upload" component={MediaUpload} />
-              <Route path="/article/editor/:naddr" component={ArticleEditorLong} />
-              <Route path="*404" component={NotFound} />
-            </Routes>
-          </div>
-          <RightSidebar />
-        </div>
-      </Show>
-      <Show when={isAnimating()}>
+
+      <Show when={app?.showZapAnimation}>
         <ZapAnimation
           src={zapMD}
-          onComplete={onZapAnimationComplete}
+          onComplete={() => app?.actions.setShowZapAnimation(false)}
         />
       </Show>
-      <Show when={isCustomZap()}>
-        <CustomZap onClose={onCustomZapClose} />
+
+      <Show when={app?.showCustomZapModal}>
+        <CustomZap />
       </Show>
-      <ReactionsModal />
-      <NoteContextMenu />
-      <NoteVideoContextMenu />
-      <ArticleOverviewContextMenu />
-      <ArticleDraftContextMenu />
-      <LivestreamContextMenu />
-      <LnQrCodeModal />
-      <CashuQrCodeModal />
-      <ProfileQrCodeModal />
-      <ReportContentModal />
-      <ConfirmModal />
-      <SubscribeToAuthorModal />
-      <EnterPinModal />
-      <CreateAccountModal />
-      <LoginModal />
-      <TooLongToast />
+
+      <Show when={app?.showReactionsModal}>
+        <ReactionsModal />
+      </Show>
+
+      <Show when={app?.showNoteContextMenu}>
+        <NoteContextMenu />
+      </Show>
+
+      <Show when={app?.showNoteVideoContextMenu}>
+        <NoteVideoContextMenu />
+      </Show>
+
+      <Show when={app?.showArticleOverviewContextMenu}>
+        <ArticleOverviewContextMenu />
+      </Show>
+
+      <Show when={app?.showArticleDraftContextMenu}>
+        <ArticleDraftContextMenu />
+      </Show>
+
+      <Show when={app?.showLivestreamContextMenu}>
+        <LivestreamContextMenu />
+      </Show>
+
+      <Show when={app?.showLnQrCodeModal}>
+        <LnQrCodeModal />
+      </Show>
+
+      <Show when={app?.showCashuQrCodeModal}>
+        <CashuQrCodeModal />
+      </Show>
+
+      <Show when={app?.showProfileQrCodeModal}>
+        <ProfileQrCodeModal />
+      </Show>
+
+      <Show when={app?.showReportContentModal}>
+        <ReportContentModal />
+      </Show>
+
+      <Show when={app?.showConfirmModal}>
+        <ConfirmModal />
+      </Show>
+
+      <Show when={app?.showSubscribeToAuthorModal}>
+        <SubscribeToAuthorModal />
+      </Show>
+
+      <Show when={app?.showEnterPinModal}>
+        <EnterPinModal />
+      </Show>
+
+      <Show when={app?.showCreateAccountModal}>
+        <CreateAccountModal />
+      </Show>
+
+      <Show when={app?.showLoginModal}>
+        <LoginModal />
+      </Show>
+
+      <Show when={app?.showTooLongToast}>
+        <TooLongToast />
+      </Show>
     </div>
   );
 };
 
 export default Layout;
-
