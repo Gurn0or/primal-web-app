@@ -37,7 +37,6 @@
           }
         }
         .closeBtn {
-          @extend .btn;
           @extend .btn, .ghost;
           padding: 8px;
           border-radius: 50%;
@@ -136,12 +135,10 @@
         display: flex;
         gap: 12px;
         .primary {
-          @extend .btn;
           @extend .btn, .primary;
           flex: 1;
         }
         .secondary {
-          @extend .btn;
           @extend .btn, .secondary;
           flex: 1;
         }
@@ -309,11 +306,9 @@
         @extend .btn, .ghost;
       }
       .primary {
-        @extend .btn;
         @extend .btn, .primary;
       }
       .secondary {
-        @extend .btn;
         @extend .btn, .secondary;
       }
     }
