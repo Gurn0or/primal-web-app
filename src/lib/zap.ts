@@ -249,6 +249,9 @@ export const parseZapPayload = (zapEvent: NostrRelaySignedEvent): PrimalZap | un
   return zap;
 };
 
+// Alias for parseZapPayload to maintain compatibility
+export const convertToZap = parseZapPayload;
+
 export const topZapFeed = (page: MegaFeedPage) => {
   const sorted = page.topZaps.sort((a, b) => b.amount - a.amount);
   const zapList: TopZap[] = [];
