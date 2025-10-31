@@ -20,6 +20,38 @@ export const canUserReceiveZaps = (user: PrimalUser | undefined): boolean => {
   return !!(user.lud16 || user.lud06);
 };
 
+export const zapNote = async (
+  note: PrimalNote,
+  pubkey: string,
+  amount: number,
+  message: string,
+  relays: string[],
+  nwcEnc?: string
+): Promise<boolean> => {
+  try {
+    // Create zap invoice for the note
+    const invoice = await createZapInvoiceForNote(note, amount, message);
+    
+    if (!invoice) {
+      lastZapError = 'Failed to create invoice';
+      return false;
+    }
+
+    // Try NWC payment first if available
+    if (nwcEnc) {
+      const success = await zapOverNWC(pubkey, nwcEnc, invoice);
+      if (success) return true;
+    }
+
+    // Fallback to WebLN or Breez
+    return await payInvoice(invoice, 'webln');
+  } catch (e: any) {
+    lastZapError = e.message || 'Zap failed';
+    logError(e);
+    return false;
+  }
+};
+
 export const zapOverNWC = async (pubkey: string, nwcEnc: string, invoice: string) => {
   let promises: Promise<boolean>[] = [];
   let relays: Relay[] = [];
