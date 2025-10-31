@@ -1,10 +1,6 @@
 import { connect, defaultConfig, setLogger } from '@breeztech/breez-sdk-spark';
 import type { Config, ConnectRequest, EnvironmentType } from '@breeztech/breez-sdk-spark';
 
-// Re-export SDK functions and types that other modules need
-export { connect, defaultConfig, setLogger };
-export type { Config, ConnectRequest, EnvironmentType };
-
 let breezSDK: any | null = null;
 
 export async function initBreezSDK(
@@ -17,8 +13,8 @@ export async function initBreezSDK(
   }
 
   try {
-    const config = defaultConfig(environment, apiKey);
-    breezSDK = await connect({ config, mnemonic: '' });
+    const config = await defaultConfig(environment, apiKey);
+    breezSDK = await connect({ config });
     console.log('Breez SDK Spark initialized successfully');
     return breezSDK;
   } catch (error) {
