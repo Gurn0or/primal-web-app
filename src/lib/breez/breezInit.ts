@@ -1,6 +1,10 @@
 import { connect, defaultConfig, setLogger } from '@breeztech/breez-sdk-spark';
 import type { Config, ConnectRequest, EnvironmentType } from '@breeztech/breez-sdk-spark';
 
+// Re-export SDK functions and types that other modules need
+export { connect, defaultConfig, setLogger };
+export type { Config, ConnectRequest, EnvironmentType };
+
 let breezSDK: any | null = null;
 
 export async function initBreezSDK(
