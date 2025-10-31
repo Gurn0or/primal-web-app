@@ -9,8 +9,9 @@ import { decodeNWCUri } from "./wallet";
 import { hexToBytes, parseBolt11 } from "../utils";
 import { convertToUser } from "../stores/profile";
 import { StreamingData } from "./streaming";
+
 // Breez SDK Spark import
-import { breezPayInvoice } from "./breez/breezPayments";
+import { payInvoice as breezPayInvoice } from "./breez/breezPayments";
 
 export let lastZapError: string = "";
 
@@ -32,7 +33,6 @@ export const zapOverNWC = async (pubkey: string, nwcEnc: string, invoice: string
       promises.push(new Promise(async (resolve) => {
         try {
           await relay.connect();
-
           relays.push(relay);
 
           let isResolved = false;
@@ -42,7 +42,6 @@ export const zapOverNWC = async (pubkey: string, nwcEnc: string, invoice: string
           sub.on('event', (event: any) => {
             try {
               const decryptedContent = nip04.decrypt(nwcConfig.secret, nwcConfig.pubkey, event.content);
-
               const content = JSON.parse(decryptedContent);
 
               if (content.result) {
