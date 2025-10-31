@@ -29,7 +29,6 @@ export const zapNote = async (
   nwcEnc?: string
 ): Promise<boolean> => {
   try {
-    // Create zap invoice for the note
     const invoice = await createZapInvoiceForNote(note, amount, message);
     
     if (!invoice) {
@@ -37,18 +36,134 @@ export const zapNote = async (
       return false;
     }
 
-    // Try NWC payment first if available
     if (nwcEnc) {
       const success = await zapOverNWC(pubkey, nwcEnc, invoice);
       if (success) return true;
     }
 
-    // Fallback to WebLN or Breez
     return await payInvoice(invoice, 'webln');
   } catch (e: any) {
     lastZapError = e.message || 'Zap failed';
     logError(e);
     return false;
+  }
+};
+
+export const zapArticle = async (
+  article: PrimalArticle,
+  pubkey: string,
+  amount: number,
+  message: string,
+  relays: string[],
+  nwcEnc?: string
+): Promise<boolean> => {
+  try {
+    const invoice = await createZapInvoiceForArticle(article, amount, message);
+    
+    if (!invoice) {
+      lastZapError = 'Failed to create invoice';
+      return false;
+    }
+
+    if (nwcEnc) {
+      const success = await zapOverNWC(pubkey, nwcEnc, invoice);
+      if (success) return true;
+    }
+
+    return await payInvoice(invoice, 'webln');
+  } catch (e: any) {
+    lastZapError = e.message || 'Zap failed';
+    logError(e);
+    return false;
+  }
+};
+
+export const zapProfile = async (
+  profile: PrimalUser,
+  pubkey: string,
+  amount: number,
+  message: string,
+  relays: string[],
+  nwcEnc?: string
+): Promise<boolean> => {
+  try {
+    const invoice = await createZapInvoiceForProfile(profile, amount, message);
+    
+    if (!invoice) {
+      lastZapError = 'Failed to create invoice';
+      return false;
+    }
+
+    if (nwcEnc) {
+      const success = await zapOverNWC(pubkey, nwcEnc, invoice);
+      if (success) return true;
+    }
+
+    return await payInvoice(invoice, 'webln');
+  } catch (e: any) {
+    lastZapError = e.message || 'Zap failed';
+    logError(e);
+    return false;
+  }
+};
+
+export const zapDVM = async (
+  dvm: PrimalDVM,
+  dvmUser: PrimalUser,
+  pubkey: string,
+  amount: number,
+  message: string,
+  relays: string[]
+): Promise<boolean> => {
+  try {
+    // For DVM, we might need a different invoice creation approach
+    // Using profile invoice as fallback
+    const invoice = await createZapInvoiceForProfile(dvmUser, amount, message);
+    
+    if (!invoice) {
+      lastZapError = 'Failed to create invoice';
+      return false;
+    }
+
+    return await payInvoice(invoice, 'webln');
+  } catch (e: any) {
+    lastZapError = e.message || 'Zap failed';
+    logError(e);
+    return false;
+  }
+};
+
+export const zapStream = async (
+  stream: StreamingData,
+  streamAuthor: PrimalUser,
+  pubkey: string,
+  amount: number,
+  message: string,
+  relays: string[],
+  nwcEnc?: string
+): Promise<{success: boolean, event?: any}> => {
+  try {
+    const invoice = await createZapInvoiceForStream(stream, amount, message);
+    
+    if (!invoice) {
+      lastZapError = 'Failed to create invoice';
+      return {success: false};
+    }
+
+    let paymentSuccess = false;
+    if (nwcEnc) {
+      paymentSuccess = await zapOverNWC(pubkey, nwcEnc, invoice);
+    }
+
+    if (!paymentSuccess) {
+      paymentSuccess = await payInvoice(invoice, 'webln');
+    }
+
+    return {success: paymentSuccess, event: null};
+  } catch (e: any) {
+    lastZapError = e.message || 'Zap failed';
+    logError(e);
+    return {success: false};
   }
 };
 
