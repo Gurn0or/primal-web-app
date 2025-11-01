@@ -1,4 +1,4 @@
-import { connect, defaultConfig, setLogger } from '@breeztech/breez-sdk-spark';
+import { connect, defaultConfig, setLogger, Network } from '@breeztech/breez-sdk-spark';
 import type { Config, ConnectRequest, EnvironmentType } from '@breeztech/breez-sdk-spark';
 
 let breezSDK: any | null = null;
@@ -13,7 +13,9 @@ export async function initBreezSDK(
   }
 
   try {
-    const config = await defaultConfig(environment, apiKey);
+    const config = defaultConfig(environment === 'production' ? Network.Mainnet : Network.Testnet);
+    config.apiKey = apiKey;
+
     breezSDK = await connect({ config });
     console.log('Breez SDK Spark initialized successfully');
     return breezSDK;
@@ -33,21 +35,4 @@ export async function validateMnemonic(mnemonic: string): Promise<boolean> {
 
 export async function connectBreezSDK(mnemonic: string): Promise<void> {
   throw new Error('connectBreezSDK stub - not implemented');
-}
-
-export async function disconnectBreezSDK(): Promise<void> {
-  if (!breezSDK) {
-    console.warn('Breez SDK not initialized');
-    return;
-  }
-  breezSDK = null;
-  console.log('Disconnected from Breez SDK Spark');
-}
-
-export function getBreezSDK(): any | null {
-  return breezSDK;
-}
-
-export function isBreezSDKInitialized(): boolean {
-  return breezSDK !== null;
 }
