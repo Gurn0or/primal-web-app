@@ -6,9 +6,7 @@ import {
   connect,
   disconnect,
   defaultConfig,
-  type EnvironmentType,
 } from '@breeztech/breez-sdk-spark';
-
 import { initBreezSDK, getBreezSDK, disconnectBreezSDK, isBreezSDKInitialized } from './breezInit';
 import type { InitOptions, PayResult, InvoiceResult, WalletBalance, HistoryFilter } from './breezTypes';
 
@@ -24,9 +22,8 @@ export class BreezWallet {
       console.log('BreezWallet already initialized');
       return;
     }
-
     const { apiKey, environment = 'production' } = options;
-    this.sdk = await initBreezSDK(apiKey, environment as EnvironmentType);
+    this.sdk = await initBreezSDK(apiKey, environment);
   }
 
   async getBalance(): Promise<WalletBalance> {
@@ -36,44 +33,36 @@ export class BreezWallet {
     throw new Error('getBalance stub - not implemented');
   }
 
-  async sendPayment(invoice: string): Promise<PayResult> {
+  async pay(invoice: string): Promise<PayResult> {
     if (!this.sdk) {
       throw new Error('BreezWallet not initialized');
     }
-    throw new Error('sendPayment stub - not implemented');
+    throw new Error('pay stub - not implemented');
   }
 
-  async receivePayment(amountSats: number, description?: string): Promise<InvoiceResult> {
+  async createInvoice(amount: number, description: string): Promise<InvoiceResult> {
     if (!this.sdk) {
       throw new Error('BreezWallet not initialized');
     }
-    throw new Error('receivePayment stub - not implemented');
+    throw new Error('createInvoice stub - not implemented');
   }
 
-  async getPaymentHistory(filter?: HistoryFilter): Promise<any[]> {
+  async getHistory(filter?: HistoryFilter): Promise<any[]> {
     if (!this.sdk) {
       throw new Error('BreezWallet not initialized');
     }
-    throw new Error('getPaymentHistory stub - not implemented');
+    throw new Error('getHistory stub - not implemented');
   }
 
   async disconnect(): Promise<void> {
-    if (this.sdk) {
-      await disconnectBreezSDK();
-      this.sdk = null;
-    }
+    if (!this.sdk) return;
+    await disconnectBreezSDK();
+    this.sdk = null;
   }
 
-  isInitialized(): boolean {
-    return this.sdk !== null;
+  // Helper to reconfigure environment if needed (reinitialize)
+  async reconfigure(apiKey: string, environment: string = 'production'): Promise<void> {
+    await this.disconnect();
+    this.sdk = await initBreezSDK(apiKey, environment);
   }
-}
-
-// Standalone function exports for UI compatibility
-export async function initBreezWallet(apiKey: string, environment: EnvironmentType = 'production'): Promise<void> {
-  await initBreezSDK(apiKey, environment);
-}
-
-export function isWalletInitialized(): boolean {
-  return isBreezSDKInitialized();
 }
