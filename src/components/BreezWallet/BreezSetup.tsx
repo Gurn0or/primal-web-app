@@ -73,17 +73,7 @@ const BreezSetup: Component = () => {
     );
     
     if (isValid) {
-      try {
-        // Initialize Breez SDK with the confirmed seed phrase
-        const { initBreezSDK, connectBreezSDK } = await import('../../lib/breez/breezInit');
-        const apiKey = import.meta.env.VITE_BREEZ_API_KEY || 'demo-api-key';
-        
-        await initBreezSDK(apiKey, 'production');
-        await connectBreezSDK(state.seedPhrase.join(' '));
-        
-        setState('step', 'complete');
-        console.log('Wallet initialized successfully');
-      } catch (error) {
+      try { const { initBreezSDK } = await import("../../lib/breez/breezInit"); const apiKey = import.meta.env.VITE_BREEZ_API_KEY || "demo-api-key"; const mnemonic = state.seedPhrase.join(" "); await initBreezSDK(apiKey, mnemonic, "production"); setState("step", "complete"); console.log("Wallet initialized successfully"); } catch (error) {
         console.error('Failed to initialize wallet:', error);
         alert(`Wallet creation failed: ${error.message}. Please try again.`);
       }
@@ -143,7 +133,7 @@ const BreezSetup: Component = () => {
                 </Show>
                 <Show when={!showSeed()}>
                   <div class={styles.hiddenSeed}>
-                    <p>Your recovery phrase is hidden for security</p>
+                    Your recovery phrase is hidden for security
                   </div>
                 </Show>
               </div>
