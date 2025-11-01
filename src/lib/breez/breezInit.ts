@@ -1,11 +1,11 @@
-import { connect, defaultConfig, setLogger, Network } from '@breeztech/breez-sdk-spark';
-import type { Config, ConnectRequest, EnvironmentType } from '@breeztech/breez-sdk-spark';
+import { connect, defaultConfig, Network } from '@breeztech/breez-sdk-spark';
 
 let breezSDK: any | null = null;
 
 export async function initBreezSDK(
   apiKey: string,
-  environment: EnvironmentType = 'production'
+  mnemonic: string,
+  environment: 'production' | 'development' = 'production'
 ): Promise<any> {
   if (breezSDK) {
     console.log('Breez SDK already initialized');
@@ -13,10 +13,20 @@ export async function initBreezSDK(
   }
 
   try {
-    const config = defaultConfig(environment === 'production' ? Network.Mainnet : Network.Regtest);
+    // Create config
+    const network = environment === 'production' ? Network.Mainnet : Network.Regtest;
+    const config = defaultConfig(network);
     config.apiKey = apiKey;
 
-    breezSDK = await connect({ config });
+    // Create seed from mnemonic
+    const seed = {
+      type: 'Mnemonic',
+      mnemonic: mnemonic,
+      passphrase: undefined
+    };
+
+    // Connect with config and seed
+    breezSDK = await connect({ config, seed });
     console.log('Breez SDK Spark initialized successfully');
     return breezSDK;
   } catch (error) {
@@ -25,14 +35,21 @@ export async function initBreezSDK(
   }
 }
 
-export async function generateSeedPhrase(): Promise<string> {
-  throw new Error('generateSeedPhrase stub - not implemented');
+export async function disconnectBreezSDK(): Promise<void> {
+  if (!breezSDK) {
+    console.warn('Breez SDK not initialized');
+    return;
+  }
+  
+  await breezSDK.disconnect();
+  breezSDK = null;
+  console.log('Disconnected from Breez SDK Spark');
 }
 
-export async function validateMnemonic(mnemonic: string): Promise<boolean> {
-  throw new Error('validateMnemonic stub - not implemented');
+export function getBreezSDK(): any | null {
+  return breezSDK;
 }
 
-export async function connectBreezSDK(mnemonic: string): Promise<void> {
-  throw new Error('connectBreezSDK stub - not implemented');
+export function isBreezSDKInitialized(): boolean {
+  return breezSDK !== null;
 }
