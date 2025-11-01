@@ -26,6 +26,7 @@ export async function initBreezSDK(
 
     // Connect with config and seed
     breezSDK = await connect({ config, seed });
+
     console.log('Breez SDK Spark initialized successfully');
     return breezSDK;
   } catch (error) {
@@ -40,4 +41,12 @@ export async function disconnectBreezSDK(): Promise<void> {
     breezSDK = null;
     console.log('Disconnected from Breez SDK Spark');
   }
+}
+
+export function getBreezSDK(): any | null {
+  return breezSDK;
+}
+
+export function isBreezSDKInitialized(): boolean {
+  return breezSDK !== null;
 }
