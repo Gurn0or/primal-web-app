@@ -1,81 +1,294 @@
 import { Component, createEffect, createSignal, on, onCleanup, onMount, Show } from 'solid-js';
-import { useLocation } from '@solidjs/router';
-import { isPhone } from '../../lib/media';
-import { useAccountContext } from '../../contexts/AccountContext';
-import { useAppContext } from '../../contexts/AppContext';
-import { useIntl } from '@cookbook/solid-intl';
-import LayoutPhone from './LayoutPhone';
-import LayoutDesktop from './LayoutDesktop';
+
 import styles from './Layout.module.scss';
-import ZapAnimation from '../ZapAnimation/ZapAnimation';
+
+import { useBeforeLeave, useLocation, useParams} from '@solidjs/router';
+import { useAccountContext } from '../../contexts/AccountContext';
 import zapMD from '../../assets/lottie/zap_md.json';
-import CustomZap from '../CustomZap/CustomZap';
+import { useHomeContext } from '../../contexts/HomeContext';
+import { SendNoteResult } from '../../types/primal';
+import { useProfileContext } from '../../contexts/ProfileContext';
+import ZapAnimation from '../ZapAnimation/ZapAnimation';
 import ReactionsModal from '../ReactionsModal/ReactionsModal';
+import { useAppContext } from '../../contexts/AppContext';
+import CustomZap from '../CustomZap/CustomZap';
 import NoteContextMenu from '../Note/NoteContextMenu';
-import NoteVideoContextMenu from '../Note/NoteVideoContextMenu';
-import ArticleOverviewContextMenu from '../ArticlePreview/ArticleOverviewContextMenu';
-import ArticleDraftContextMenu from '../ArticlePreview/ArticleDraftContextMenu';
-import LivestreamContextMenu from '../LivestreamPreview/LivestreamContextMenu';
 import LnQrCodeModal from '../LnQrCodeModal/LnQrCodeModal';
-import CashuQrCodeModal from '../CashuQrCodeModal/CashuQrCodeModal';
-import ProfileQrCodeModal from '../ProfileQrCodeModal/ProfileQrCodeModal';
-import ReportContentModal from '../ReportContentModal/ReportContentModal';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import CashuQrCodeModal from '../CashuQrCodeModal/CashuQrCodeModal';
 import SubscribeToAuthorModal from '../SubscribeToAuthorModal/SubscribeToAuthorModal';
+import { useSettingsContext } from '../../contexts/SettingsContext';
 import EnterPinModal from '../EnterPinModal/EnterPinModal';
 import CreateAccountModal from '../CreateAccountModal/CreateAccountModal';
 import LoginModal from '../LoginModal/LoginModal';
-import TooLongToast from '../TooLongToast/TooLongToast';
-import { FeedOption } from '../../types/primal';
-import Home from '../../pages/Home';
-import Explore from '../../pages/Explore';
-import Reads from '../../pages/Reads';
-import Downloads from '../../pages/Downloads';
-import Messages from '../../pages/Messages';
-import Bookmarks from '../../pages/Bookmarks';
-import Settings from '../../pages/Settings';
+import { unwrap } from 'solid-js/store';
+import { followWarning, forgotPin } from '../../translations';
+import { useIntl } from '@cookbook/solid-intl';
+import LayoutPhone from './LayoutPhone';
+import LayoutDesktop from './LayoutDesktop';
+import { isPhone } from '../../utils';
+import ArticleOverviewContextMenu from '../Note/ArticleOverviewContextMenu';
+import ArticleDraftContextMenu from '../Note/ArticleDraftContextMenu';
+import LiveStreamContextMenu from '../Note/LiveStreamContextMenu';
+import ProfileQrCodeModal from '../ProfileQrCodeModal/ProfileQrCodeModal';
+import ReportContentModal from '../ReportContentModal/ReportContentModal';
+import NoteVideoContextMenu from '../Note/NoteVideoContextMenu';
 
-const Layout: Component = () => {
+export const [isHome, setIsHome] = createSignal(false);
+
+const Layout: Component = (props) => {
+
   const account = useAccountContext();
-  const app = useAppContext();
-  const intl = useIntl();
+  const home = useHomeContext();
+  const profile = useProfileContext();
   const location = useLocation();
+  const params = useParams();
+  const app = useAppContext();
+  const settings = useSettingsContext();
+  const intl = useIntl();
 
-  const [isReady, setIsReady] = createSignal(false);
+  createEffect(on(() => location.pathname, (path, prev) => {
+    if (path !== prev) {
+      app?.actions.closeContextMenu();
+      app?.actions.closeArticleOverviewContextMenu();
+      app?.actions.closeArticleDraftContextMenu();
+    }
+  }));
 
   createEffect(() => {
-    if (account?.isKeyLookupDone && app?.isAppReady) {
-      setTimeout(() => setIsReady(true), 100);
+    const newNote = document.getElementById('new_note_input');
+    const newNoteTextArea = document.getElementById('new_note_text_area') as HTMLTextAreaElement;
+
+    if (account?.showNewNoteForm) {
+      if (!newNote || !newNoteTextArea) {
+        return;
+      }
+      newNote?.classList.add(styles.animatedShow);
+      newNoteTextArea?.focus();
+    }
+    else {
+      if (!newNote || !newNoteTextArea) {
+        return;
+      }
+      newNote?.classList.remove(styles.animatedShow);
+      newNoteTextArea.value = '';
+    }
+  });
+
+  const onNewNotePosted = (result: SendNoteResult) => {
+    const path = location.pathname.split('/');
+
+    if (path[1] === 'home' && home) {
+      // check for new notes on the home feed
+      home.actions.checkForNewNotes(home.selectedFeed?.spec || '')
+      return;
+    }
+
+    if (['p', 'profile'].includes(path[1]) && profile) {
+      const pubkey = params.npub;
+      // check for new notes on the profile feed
+      profile.actions.checkForNewNotes(pubkey || account?.publicKey);
+      return;
+    }
+  }
+
+  createEffect(() => {
+    if (location.pathname) {
+      settings?.actions.refreshMobileReleases();
+    }
+  });
+
+  createEffect(() => {
+    if (!account?.publicKey) {
+      account?.actions.checkNostrKey();
     }
   });
 
   return (
-    <Show when={isReady()}>
-      <div class={styles.layout}>
-        <Show when={isPhone()} fallback={<LayoutDesktop />}>
-          <LayoutPhone />
-        </Show>
-        <ZapAnimation />
-        <CustomZap />
-        <ReactionsModal />
-        <NoteContextMenu />
-        <NoteVideoContextMenu />
-        <ArticleOverviewContextMenu />
-        <ArticleDraftContextMenu />
-        <LivestreamContextMenu />
-        <LnQrCodeModal />
-        <CashuQrCodeModal />
-        <ProfileQrCodeModal />
-        <ReportContentModal />
-        <ConfirmModal />
-        <SubscribeToAuthorModal />
-        <EnterPinModal />
-        <CreateAccountModal />
-        <LoginModal />
-        <TooLongToast />
-      </div>
-    </Show>
-  );
-};
+    <>
+      <ZapAnimation
+        when={account?.animatedZap}
+        zapped={() => account?.actions.setString('animatedZap', '')}
+      />
+
+      <Show
+        when={isPhone()}
+        fallback={
+          <LayoutDesktop>
+            {props.children}
+          </LayoutDesktop>
+        }
+      >
+        <LayoutPhone>
+          {props.children}
+        </LayoutPhone>
+      </Show>
+
+      <ReactionsModal
+        noteId={app?.showReactionsModal}
+        stats={app?.reactionStats}
+        onClose={() => app?.actions.closeReactionModal()}
+      />
+
+      <CustomZap
+        open={app?.showCustomZapModal}
+        note={app?.customZap?.note}
+        profile={app?.customZap?.profile}
+        dvm={app?.customZap?.dvm}
+        stream={app?.customZap?.stream}
+        streamAuthor={app?.customZap?.streamAuthor}
+        onConfirm={app?.customZap?.onConfirm}
+        onSuccess={app?.customZap?.onSuccess}
+        onFail={app?.customZap?.onFail}
+        onCancel={app?.customZap?.onCancel}
+      />
+
+      <LnQrCodeModal
+        open={app?.showLnInvoiceModal}
+        lnbc={app?.lnbc?.invoice || ''}
+        onPay={app?.lnbc?.onPay}
+        onClose={app?.lnbc?.onCancel}
+      />
+
+      <CashuQrCodeModal
+        open={app?.showCashuInvoiceModal}
+        cashu={app?.cashu?.invoice || ''}
+        onPay={app?.cashu?.onPay}
+        onClose={app?.cashu?.onCancel}
+      />
+
+      <ConfirmModal
+        open={app?.showConfirmModal}
+        setOpen={app?.actions.closeConfirmModal}
+        title={app?.confirmInfo?.title}
+        description={app?.confirmInfo?.description}
+        confirmLabel={app?.confirmInfo?.confirmLabel}
+        abortLabel={app?.confirmInfo?.abortLabel}
+        onConfirm={app?.confirmInfo?.onConfirm}
+        onAbort={app?.confirmInfo?.onAbort}
+      />
+
+      <SubscribeToAuthorModal
+        author={app?.subscribeToAuthor}
+        onClose={app?.actions.closeAuthorSubscribeModal}
+        onSubscribe={app?.subscribeToTier}
+      />
+
+      <EnterPinModal
+        open={(account?.showPin || '').length > 0}
+        valueToDecrypt={account?.showPin}
+        onSuccess={(sec: string) => {
+          account?.actions.setSec(sec, true);
+          account?.actions.setString('showPin', '');
+        }}
+        onAbort={() => account?.actions.setString('showPin', '')}
+        onForgot={() => {
+          account?.actions.setString('showPin', '');
+          account?.actions.setFlag('showForgot', true);
+        }}
+      />
+
+      <CreateAccountModal
+        open={account?.showGettingStarted}
+        onAbort={() => account?.actions.setFlag('showGettingStarted', false)}
+        onLogin={() => {
+          account?.actions.setFlag('showGettingStarted', false);
+          account?.actions.setFlag('showLogin', true);
+        }}
+      />
+
+      <LoginModal
+        open={account?.showLogin}
+        onAbort={() => account?.actions.setFlag('showLogin', false)}
+      />
+
+      <ConfirmModal
+        open={account?.followData.openDialog}
+        title={intl.formatMessage(followWarning.title)}
+        description={intl.formatMessage(followWarning.description)}
+        confirmLabel={intl.formatMessage(followWarning.confirm)}
+        abortLabel={intl.formatMessage(followWarning.abort)}
+        onConfirm={async () => {
+          if (account?.publicKey) {
+            const data = unwrap(account?.followData)
+            await account.actions.resolveContacts(account?.publicKey, data.following, data.date, data.tags, data.relayInfo);
+          }
+          account?.actions.setFollowData({
+            tags: [],
+            date: 0,
+            relayInfo: '',
+            openDialog: false,
+            following: [],
+          });
+        }}
+        onAbort={() => {
+          account?.actions.setFollowData({
+            tags: [],
+            date: 0,
+            relayInfo: '',
+            openDialog: false,
+            following: [],
+          });
+        }}
+      />
+
+      <ConfirmModal
+        open={account?.showForgot}
+        title={intl.formatMessage(forgotPin.title)}
+        description={intl.formatMessage(forgotPin.description)}
+        confirmLabel={intl.formatMessage(forgotPin.confirm)}
+        abortLabel={intl.formatMessage(forgotPin.abort)}
+        onConfirm={async () => {
+          account?.actions.logout();
+          account?.actions.setFlag('showForgot', false);
+        }}
+        onAbort={() => {
+          account?.actions.setFlag('showForgot', false);
+        }}
+      />
+
+      <NoteContextMenu
+        open={app?.showNoteContextMenu}
+        onClose={app?.actions.closeContextMenu}
+        data={app?.noteContextMenuInfo}
+      />
+
+      <LiveStreamContextMenu
+        open={app?.showStreamContextMenu}
+        onClose={app?.actions.closeStreamContextMenu}
+        data={app?.streamContextMenuInfo}
+      />
+
+      <NoteVideoContextMenu
+        open={app?.showNoteVideoContextMenu}
+        onClose={app?.actions.closeNoteVideoContextMenu}
+        data={app?.noteVideoContextMenuInfo}
+      />
+
+      <ArticleOverviewContextMenu
+        open={app?.showArticleOverviewContextMenu}
+        onClose={app?.actions.closeArticleOverviewContextMenu}
+        data={app?.articleOverviewContextMenuInfo}
+      />
+
+      <ArticleDraftContextMenu
+        open={app?.showArticleDraftContextMenu}
+        onClose={app?.actions.closeArticleDraftContextMenu}
+        data={app?.articleDraftContextMenuInfo}
+      />
+
+      <ProfileQrCodeModal
+        open={app?.showProfileQr !== undefined}
+        onClose={app?.actions.closeProfileQr}
+        profile={app?.showProfileQr}
+      />
+
+      <ReportContentModal
+        note={app?.reportContent}
+        onClose={() => app?.actions.closeReportContent()}
+      />
+    </>
+  )
+}
 
 export default Layout;
