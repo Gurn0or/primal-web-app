@@ -33,3 +33,11 @@ export async function initBreezSDK(
     throw new Error(`Breez SDK initialization failed: ${error}`);
   }
 }
+
+export async function disconnectBreezSDK(): Promise<void> {
+  if (breezSDK !== null) {
+    await breezSDK.disconnect();
+    breezSDK = null;
+    console.log('Disconnected from Breez SDK Spark');
+  }
+}
