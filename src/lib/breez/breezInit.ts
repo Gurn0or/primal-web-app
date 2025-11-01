@@ -1,52 +1,55 @@
-import { connect, defaultConfig } from '@breeztech/breez-sdk-spark';
+import { initWasm, BindingLiquidSdk } from '@breeztech/breez-sdk-liquid/web';
+import * as breezSdk from '@breeztech/breez-sdk-liquid/web';
 
-let breezSDK: any | null = null;
+let liquidSDK: BindingLiquidSdk | null = null;
+let wasmInitialized = false;
+
+// Initialize WASM module
+export async function initWasm() {
+  if (wasmInitialized) {
+    return;
+  }
+  try {
+    await breezSdk.initWasm();
+    wasmInitialized = true;
+    console.log('Breez SDK Liquid WASM initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize WASM:', error);
+    throw new Error(`WASM initialization failed: ${error}`);
+  }
+}
 
 export async function initBreezSDK(
   apiKey: string,
   mnemonic: string,
   environment: 'production' | 'development' = 'production'
-): Promise<any> {
-  if (breezSDK) {
-    console.log('Breez SDK already initialized');
-    return breezSDK;
+): Promise<BindingLiquidSdk> {
+  if (liquidSDK) {
+    console.log('Breez SDK Liquid already initialized');
+    return liquidSDK;
   }
 
   try {
-    // Create config
-    const config = defaultConfig(environment === 'production' ? 'mainnet' : 'regtest');
-    config.apiKey = apiKey;
+    // Ensure WASM is initialized first
+    await initWasm();
+
+    // Create config using defaultConfig
+    const config = breezSdk.defaultConfig(environment === 'production' ? 'mainnet' : 'testnet');
+    config.breezApiKey = apiKey;
 
     // Create seed from mnemonic
     const seed = {
-      type: 'Mnemonic',
+      type: 'Mnemonic' as const,
       mnemonic: mnemonic,
       passphrase: undefined
     };
 
     // Connect with config and seed
-    breezSDK = await connect({ config, seed });
-
-    console.log('Breez SDK Spark initialized successfully');
-    return breezSDK;
+    liquidSDK = await breezSdk.connect({ config, seed });
+    console.log('Breez SDK Liquid initialized successfully');
+    return liquidSDK;
   } catch (error) {
-    console.error('Failed to initialize Breez SDK:', error);
-    throw new Error(`Breez SDK initialization failed: ${error}`);
+    console.error('Failed to initialize Breez SDK Liquid:', error);
+    throw new Error(`Breez SDK Liquid initialization failed: ${error}`);
   }
-}
-
-export async function disconnectBreezSDK(): Promise<void> {
-  if (breezSDK !== null) {
-    await breezSDK.disconnect();
-    breezSDK = null;
-    console.log('Disconnected from Breez SDK Spark');
-  }
-}
-
-export function getBreezSDK(): any | null {
-  return breezSDK;
-}
-
-export function isBreezSDKInitialized(): boolean {
-  return breezSDK !== null;
 }
