@@ -28,22 +28,18 @@ export async function initBreezSDK(
     console.log('Breez SDK Liquid already initialized');
     return liquidSDK;
   }
-
   try {
     // Ensure WASM is initialized first
     await initWasm();
-
     // Create config using defaultConfig
     const config = breezSdk.defaultConfig(environment === 'production' ? 'mainnet' : 'testnet');
     config.breezApiKey = apiKey;
-
     // Create seed from mnemonic
     const seed = {
       type: 'Mnemonic' as const,
       mnemonic: mnemonic,
       passphrase: undefined
     };
-
     // Connect with config and seed
     liquidSDK = await breezSdk.connect({ config, seed });
     console.log('Breez SDK Liquid initialized successfully');
@@ -52,4 +48,20 @@ export async function initBreezSDK(
     console.error('Failed to initialize Breez SDK Liquid:', error);
     throw new Error(`Breez SDK Liquid initialization failed: ${error}`);
   }
+}
+
+export async function disconnectBreezSDK(): Promise<void> {
+  if (liquidSDK !== null) {
+    await liquidSDK.disconnect();
+    liquidSDK = null;
+    console.log("Disconnected from Breez SDK Liquid");
+  }
+}
+
+export function getBreezSDK(): BindingLiquidSdk | null {
+  return liquidSDK;
+}
+
+export function isBreezSDKInitialized(): boolean {
+  return liquidSDK !== null;
 }
