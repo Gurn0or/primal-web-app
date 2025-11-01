@@ -61,7 +61,7 @@
     "@solid-primitives/map": "0.4.11",
     "@solid-primitives/media": "2.2.9",
     "@solid-primitives/scheduled": "1.4.3",
-    "@solid-primitives/scroll": "0.0.125",
+    "@solid-primitives/scroll": "^0.0.124",
     "@solid-primitives/storage": "3.8.0",
     "@solidjs/router": "0.14.10",
     "@stripe/stripe-js": "^7.3.1",
