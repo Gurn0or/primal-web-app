@@ -1,4 +1,4 @@
-import { initWasm, BindingLiquidSdk } from '@breeztech/breez-sdk-liquid/web';
+import init, { BindingLiquidSdk } from '@breeztech/breez-sdk-liquid/web';
 import * as breezSdk from '@breeztech/breez-sdk-liquid/web';
 
 let liquidSDK: BindingLiquidSdk | null = null;
@@ -10,7 +10,7 @@ export async function initWasm() {
     return;
   }
   try {
-    await breezSdk.initWasm();
+    await init();
     wasmInitialized = true;
     console.log('Breez SDK Liquid WASM initialized successfully');
   } catch (error) {
@@ -28,21 +28,20 @@ export async function initBreezSDK(
     console.log('Breez SDK Liquid already initialized');
     return liquidSDK;
   }
+
   try {
     // Ensure WASM is initialized first
     await initWasm();
+
     // Create config using defaultConfig
     const config = breezSdk.defaultConfig(environment === 'production' ? 'mainnet' : 'testnet');
     config.breezApiKey = apiKey;
-    // Create seed from mnemonic
-    const seed = {
-      type: 'Mnemonic' as const,
-      mnemonic: mnemonic,
-      passphrase: undefined
-    };
-    // Connect with config and seed
-    liquidSDK = await breezSdk.connect({ config, seed });
-    console.log('Breez SDK Liquid initialized successfully');
+
+    // Connect to Breez SDK Liquid
+    console.log('Connecting to Breez SDK Liquid...');
+    liquidSDK = await breezSdk.connect({ config, mnemonic });
+    console.log('Successfully connected to Breez SDK Liquid');
+
     return liquidSDK;
   } catch (error) {
     console.error('Failed to initialize Breez SDK Liquid:', error);
@@ -50,18 +49,18 @@ export async function initBreezSDK(
   }
 }
 
-export async function disconnectBreezSDK(): Promise<void> {
-  if (liquidSDK !== null) {
-    await liquidSDK.disconnect();
-    liquidSDK = null;
-    console.log("Disconnected from Breez SDK Liquid");
-  }
-}
-
 export function getBreezSDK(): BindingLiquidSdk | null {
   return liquidSDK;
 }
 
-export function isBreezSDKInitialized(): boolean {
-  return liquidSDK !== null;
+export async function disconnectBreezSDK() {
+  if (liquidSDK) {
+    try {
+      await liquidSDK.disconnect();
+      liquidSDK = null;
+      console.log('Disconnected from Breez SDK Liquid');
+    } catch (error) {
+      console.error('Error disconnecting from Breez SDK Liquid:', error);
+    }
+  }
 }
