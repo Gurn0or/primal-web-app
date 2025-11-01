@@ -53,16 +53,25 @@ const BreezSetup: Component = () => {
     setState('step', 'confirm');
   };
 
-  const verifyConfirmation = () => {
-    const isCorrect = state.userConfirmation.every((word, index) => {
-      return word.toLowerCase().trim() === state.seedPhrase[index].toLowerCase();
-    });
+  const verifyConfirmation = async () => {
+    const isValid = state.userConfirmation.every((word, index) =>
+      word.toLowerCase().trim() === state.seedPhrase[index].toLowerCase()
+    );
 
-    if (isCorrect) {
-      setState('step', 'complete');
+    if (isValid) {
+      try {
+        const { initBreezSDK } = await import("../../lib/breez/breezInit");
+        const apiKey = import.meta.env.VITE_BREEZ_API_KEY || "demo-api-key";
+        const mnemonic = state.seedPhrase.join(" ");
+        await initBreezSDK(apiKey, mnemonic, "production");
+        setState("step", "complete");
+        console.log("Wallet initialized successfully");
+      } catch (error) {
+        console.error("Failed to initialize wallet:", error);
+        alert(`Wallet creation failed: ${error.message}. Please try again.`);
+      }
     } else {
-      alert('The words you entered do not match your seed phrase. Please try again.');
-      setState('userConfirmation', Array(12).fill(''));
+      alert("The words do not match. Please try again.");
     }
   };
 
@@ -93,15 +102,15 @@ const BreezSetup: Component = () => {
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <div>
-                  <strong>Important:</strong>
+                  Important:
                   <ul>
-                    <li>Write down your recovery phrase and store it securely</li>
-                    <li>Never share it with anyone</li>
-                    <li>Losing it means losing access to your funds</li>
+                    Write down your recovery phrase and store it securely
+                    Never share it with anyone
+                    Losing it means losing access to your funds
                   </ul>
                 </div>
               </div>
-              <button 
+              <button
                 class={styles.primaryButton}
                 onClick={generateSeedPhrase}
                 disabled={isGenerating()}
@@ -122,7 +131,7 @@ const BreezSetup: Component = () => {
               
               <div class={styles.seedPhraseContainer}>
                 <div class={styles.seedPhraseHeader}>
-                  <button 
+                  <button
                     class={styles.toggleButton}
                     onClick={toggleSeedVisibility}
                   >
@@ -142,13 +151,13 @@ const BreezSetup: Component = () => {
               </div>
 
               <div class={styles.buttonGroup}>
-                <button 
+                <button
                   class={styles.secondaryButton}
                   onClick={() => setState('step', 'generate')}
                 >
                   Generate New Phrase
                 </button>
-                <button 
+                <button
                   class={styles.primaryButton}
                   onClick={confirmBackup}
                 >
@@ -187,7 +196,7 @@ const BreezSetup: Component = () => {
               </div>
 
               <div class={styles.buttonGroup}>
-                <button 
+                <button
                   class={styles.secondaryButton}
                   onClick={() => {
                     setState('step', 'backup');
@@ -196,7 +205,7 @@ const BreezSetup: Component = () => {
                 >
                   Back
                 </button>
-                <button 
+                <button
                   class={styles.primaryButton}
                   onClick={verifyConfirmation}
                 >
@@ -219,7 +228,7 @@ const BreezSetup: Component = () => {
                 Your Breez Lightning wallet has been successfully initialized.
                 You can now send and receive Bitcoin payments.
               </p>
-              <button 
+              <button
                 class={styles.primaryButton}
                 onClick={() => window.location.href = '/wallet'}
               >
