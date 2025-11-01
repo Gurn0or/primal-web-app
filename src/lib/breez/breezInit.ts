@@ -13,7 +13,7 @@ export async function initBreezSDK(
   }
 
   try {
-    const config = defaultConfig(environment === 'production' ? Network.Mainnet : Network.Testnet);
+    const config = defaultConfig(environment === 'production' ? Network.Mainnet : Network.Regtest);
     config.apiKey = apiKey;
 
     breezSDK = await connect({ config });
